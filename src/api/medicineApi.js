@@ -9,9 +9,11 @@ export async function getMedicine() {
   }
 }
 
-// Function to fetch a specific cabin by ID
 export async function getMedicineById(id) {
-  const response = await fetch(`http://localhost:8080//medicine/${id}`);
+  const response = await fetch(`http://localhost:8080/medicine/${id}`);
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
   const data = await response.json();
   return data;
 }
@@ -50,15 +52,18 @@ export async function addMedicine(formData) {
 }
 
 export async function updateMedicine(formData, id) {
-  console.log(formData);
+  console.log("Updating Medicine", formData);
   try {
-    const response = await fetch(`http://localhost:8080//medicine/${id}`, {
+    const response = await fetch(`http://localhost:8080/medicine/${id}`, {
       method: "PATCH",
-      body: formData, // Send FormData directly
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
     });
 
     if (!response.ok) {
-      throw new Error(`Cabin could not be Upadted: ${response.statusText}`);
+      throw new Error(`Medicine could not be Upadted: ${response.statusText}`);
     }
 
     const data = await response.json();

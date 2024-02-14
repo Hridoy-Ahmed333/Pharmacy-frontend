@@ -1,5 +1,55 @@
+import styled from "styled-components";
+import ProductDetailsWhole from "../Components/ProductDetailsWhole";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getMedicineById } from "../api/medicineApi";
+import SingleProductContext from "../context/SingleProductContext";
+
+const PageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const ProductDetailComponent = styled.div``;
+
+const CommmentContainer = styled.div`
+  border: 1px solid black;
+`;
+
 function ProductDetail() {
-  return <div>ProductDetail</div>;
+  const [product, setProduct] = useState(null);
+  const [render, setRender] = useState(true);
+  const params = useParams();
+  const productId = params.id;
+  const value = {
+    render,
+    setRender,
+    product,
+  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getMedicineById(productId);
+        setProduct(response);
+      } catch (error) {
+        console.error("Error fetching product:", error);
+      }
+    };
+
+    fetchData();
+  }, [productId, render]);
+  console.log("Page Re-Rendered");
+
+  return (
+    <SingleProductContext.Provider value={value}>
+      <PageContainer>
+        <ProductDetailComponent>
+          <ProductDetailsWhole />
+        </ProductDetailComponent>
+        <CommmentContainer>Comments</CommmentContainer>
+      </PageContainer>
+    </SingleProductContext.Provider>
+  );
 }
 
 export default ProductDetail;

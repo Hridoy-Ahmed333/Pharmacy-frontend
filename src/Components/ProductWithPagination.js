@@ -52,28 +52,6 @@ function ProductWithPagination() {
     fetchData();
   }, [searchResults, categoryFilter, search, inStockFilter]);
 
-  const indexOfLastProduct = Math.min(
-    currentPage * itemsPerPage,
-    products.length
-  );
-
-  const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
-
-  // console.log(
-  //   "Index of First Product in",
-  //   currentPage,
-  //   " page is: ",
-  //   indexOfFirstProduct
-  // );
-  // console.log(
-  //   "Index of Last Product in",
-  //   currentPage,
-  //   " page is: ",
-  //   indexOfLastProduct
-  // );
-
-  console.log(products.length);
-
   function calcProduct() {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
