@@ -1,7 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { getCategories } from "../api/categoryApi";
-import { addMedicine } from "../api/medicineApi";
+import { updateMedicine } from "../api/medicineApi";
+import SingleProductContext from "../context/SingleProductContext";
+import { ModalContext } from "../context/ModalContext";
 
 // Define styled components for form elements
 const StyledForm = styled.form`
@@ -51,21 +53,21 @@ const StyledError = styled.span`
   font-size: 0.8rem;
 `;
 
-const AddProductForm = ({ isCatAdd }) => {
+const EditForm = ({ product, reren, setReren }) => {
   const [values, setValues] = useState({
-    name: "",
-    description: "",
-    price: "",
-    discountPercentage: "",
-    brand: "",
-    category: "",
-    buyingPrice: "",
+    name: product.name || "",
+    description: product.description || "",
+    price: product.price || 0,
+    discountPercentage: product.discountPercentage || 0,
+    brand: product.brand || "",
+    category: product.category || "",
+    buyingPrice: product.buyingPrice || 0,
   });
   const [image, setImage] = useState(null);
   const fileInputRef = useRef(null);
 
   const [categories, setCategories] = useState([]);
-
+  const { show, setShow } = useContext(ModalContext);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -77,7 +79,7 @@ const AddProductForm = ({ isCatAdd }) => {
     };
 
     fetchData();
-  }, [isCatAdd]);
+  }, []);
 
   const [errors, setErrors] = useState({});
 
@@ -102,7 +104,6 @@ const AddProductForm = ({ isCatAdd }) => {
     if (!values.category) tempErrors.category = "Category is required";
     if (!values.buyingPrice)
       tempErrors.buyingPrice = " Buying Price is Required";
-    if (!image) tempErrors.image = "Image is required";
 
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
@@ -112,7 +113,14 @@ const AddProductForm = ({ isCatAdd }) => {
     event.preventDefault();
     validate();
     const formData = new FormData();
-    formData.append("image", image);
+    // Check if an image file has been selected
+    if (image) {
+      // If an image file is selected, append it to formData
+      formData.append("image", image);
+    } else {
+      // If no image file is selected, append the existing image URL from the product prop
+      formData.append("image", product.image);
+    }
     Object.keys(values).forEach((key) => {
       formData.append(key, values[key]);
     });
@@ -122,27 +130,18 @@ const AddProductForm = ({ isCatAdd }) => {
       values.price &&
       values.brand &&
       values.category &&
-      values.buyingPrice &&
-      image
+      values.buyingPrice
     ) {
-      await addMedicine(formData);
+      await updateMedicine(formData, product._id);
     } else {
       alert("Medicine cannot be added");
     }
-
-    setValues({
-      name: "",
-      description: "",
-      price: "",
-      discountPercentage: "",
-      brand: "",
-      category: "",
-      buyingPrice: "",
-    });
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
     setImage(null);
+    setReren((reren) => !reren);
+    setShow(!show);
   };
 
   return (
@@ -238,11 +237,10 @@ const AddProductForm = ({ isCatAdd }) => {
         value={values.image}
         onChange={handleImageChange}
       />
-      {errors.image && <StyledError>{errors.image}</StyledError>}
 
       <StyledButton type="submit">Submit</StyledButton>
     </StyledForm>
   );
 };
 
-export default AddProductForm;
+export default EditForm;

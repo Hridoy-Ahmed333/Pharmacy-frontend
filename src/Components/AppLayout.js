@@ -4,6 +4,12 @@ import styled from "styled-components";
 import Footer from "./Footer";
 import { SearchProvider } from "../context/SearchContext";
 import UserContext from "../context/UserContext";
+import { useContext, useEffect } from "react";
+import { CartContext } from "../context/CartContext";
+import Modal from "./Modal";
+import EditComp from "./EditComp";
+import { ModalProvider } from "../context/ModalContext";
+import { ProductProvider } from "../context/ProductContext";
 
 const StyledAppLayout = styled.div`
   display: flex;
@@ -28,26 +34,41 @@ const Container = styled.div`
 `;
 
 function AppLayout() {
+  const { setCartAmount } = useContext(CartContext);
   const userData = {
     name: "Md. Rubayat Hossain Ridoy",
     id: 1,
     role: "admin",
   };
+  useEffect(() => {
+    const storedCartAmount = localStorage.getItem("cartAmount");
+    if (storedCartAmount) {
+      // Parse the stored value back into a number and update the state
+      setCartAmount(parseInt(storedCartAmount, 10));
+    }
+  }, [setCartAmount]);
   return (
     <div>
-      <StyledAppLayout>
-        <UserContext.Provider value={userData}>
-          <SearchProvider>
-            <Header />
-            <Main>
-              <Container>
-                <Outlet />
-              </Container>
-            </Main>
-            <Footer />
-          </SearchProvider>
-        </UserContext.Provider>
-      </StyledAppLayout>
+      <ProductProvider>
+        <ModalProvider>
+          <StyledAppLayout>
+            <UserContext.Provider value={userData}>
+              <SearchProvider>
+                <Header />
+                <Main>
+                  <Container>
+                    <Outlet />
+                  </Container>
+                </Main>
+                <Footer />
+              </SearchProvider>
+            </UserContext.Provider>
+          </StyledAppLayout>
+          <Modal>
+            <EditComp />
+          </Modal>
+        </ModalProvider>
+      </ProductProvider>
     </div>
   );
 }

@@ -56,6 +56,25 @@ export async function updateMedicine(formData, id) {
   try {
     const response = await fetch(`http://localhost:8080/medicine/${id}`, {
       method: "PATCH",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Medicine could not be Upadted: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function updateStar(formData, id) {
+  console.log("Updating Medicine", formData);
+  try {
+    const response = await fetch(`http://localhost:8080/medicine/star/${id}`, {
+      method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },

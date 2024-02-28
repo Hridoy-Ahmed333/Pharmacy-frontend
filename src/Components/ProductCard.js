@@ -93,6 +93,9 @@ const DeleteButton = styled.button`
   padding: 5px 10px;
   cursor: pointer;
 `;
+const Span = styled.span`
+  font-weight: 800;
+`;
 
 const ProductCard = ({ product, onDelete }) => {
   const navigate = useNavigate();
@@ -119,7 +122,10 @@ const ProductCard = ({ product, onDelete }) => {
         <CardName onClick={(e) => handleClick(e)}>{product.name}</CardName>
 
         <PriceContainer onClick={(e) => handleClick(e)}>
-          <CardPrice>${product.price}</CardPrice>
+          <CardPrice>
+            <Span>৳</Span>
+            {product.price}
+          </CardPrice>
           {product.discountPercentage >= 0 && (
             <CardDiscount>Discount: {product.discountPercentage}%</CardDiscount>
           )}

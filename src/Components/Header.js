@@ -4,6 +4,7 @@ import { SearchContext } from "../context/SearchContext";
 import { getMedicine, searchMedicine } from "../api/medicineApi";
 import { useLocation, useNavigate } from "react-router-dom";
 import UserContext from "../context/UserContext";
+import { CartContext } from "../context/CartContext";
 
 const HeaderWrapper = styled.header`
   display: flex;
@@ -89,6 +90,7 @@ const NavLink = styled.a`
 
 // Update the Header component to include the new elements
 function Header() {
+  const { cartAmount } = useContext(CartContext);
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
@@ -150,7 +152,7 @@ function Header() {
         {isSupplier && <NavLink href="request">Request</NavLink>}
         {isAdmin && <NavLink href="addProduct">Add Product</NavLink>}
         <NavLink href="/">Products</NavLink>
-        <NavLink href="/cart">Cart</NavLink>
+        <NavLink href="/cart">Cart({cartAmount})</NavLink>
         <NavLink href="/other">other</NavLink>
       </NavLinks>
     </HeaderWrapper>

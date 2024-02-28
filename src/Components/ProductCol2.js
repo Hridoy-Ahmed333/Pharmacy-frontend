@@ -2,10 +2,15 @@ import { useContext } from "react";
 import styled from "styled-components";
 import SingleProductContext from "../context/SingleProductContext";
 import Ratings from "./Ratings";
+import TotalRating from "./TotalRating";
+import PriceComp from "./PriceComp";
+import AddToCartComp from "./AddToCartComp";
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center; // Center horizontally
+  align-items: center; // Center vertically
 `;
 
 const PictureContainer = styled.div`
@@ -46,9 +51,13 @@ function ProductCol2() {
           />
         )}
       </PictureContainer>
+
       <RatingContainer>
+        <TotalRating />
         <Ratings />
       </RatingContainer>
+      <PriceComp product={product} />
+      <AddToCartComp product={product} />
     </Container>
   );
 }

@@ -1,4 +1,3 @@
-import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Products from "./pages/Products";
 import Cart from "./pages/Cart";
@@ -11,25 +10,28 @@ import Login from "./pages/Login";
 import Other from "./pages/Other";
 import AddProduct from "./pages/AddProduct";
 import RequestProduct from "./pages/RequestProduct";
-import UserContext from "./context/UserContext";
+
+import { CartProvider } from "./context/CartContext";
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route element={<AppLayout />}>
-          <Route path="/" element={<Products />} />
-          <Route path="/:id" element={<ProductDetail />} />
-          <Route path="cart" element={<Cart />} />
-          <Route path="order" element={<Order />} />
-          <Route path="other" element={<Other />} />
-          <Route path="request" element={<RequestProduct />} />
-          <Route path="addProduct" element={<AddProduct />} />
-        </Route>
-        <Route path="*" element={<PageNotFound />} />
-        <Route path="login" element={<Login />} />
-      </Routes>
-    </Router>
+    <CartProvider>
+      <Router>
+        <Routes>
+          <Route element={<AppLayout />}>
+            <Route path="/" element={<Products />} />
+            <Route path="/:id" element={<ProductDetail />} />
+            <Route path="cart" element={<Cart />} />
+            <Route path="order" element={<Order />} />
+            <Route path="other" element={<Other />} />
+            <Route path="request" element={<RequestProduct />} />
+            <Route path="addProduct" element={<AddProduct />} />
+          </Route>
+          <Route path="*" element={<PageNotFound />} />
+          <Route path="login" element={<Login />} />
+        </Routes>
+      </Router>
+    </CartProvider>
   );
 }
 

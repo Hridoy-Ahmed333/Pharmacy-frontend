@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import StarRating from "./StarRating";
 import styled from "styled-components";
 import SingleProductContext from "../context/SingleProductContext";
-import { updateMedicine } from "../api/medicineApi";
+import { updateMedicine, updateStar } from "../api/medicineApi";
 
 const Container = styled.div`
   margin: 0 auto;
@@ -69,9 +69,6 @@ function Ratings() {
   const [CurRating, setCurRating] = useState();
   const [giveRating, setGiveRating] = useState(false);
 
-  console.log(product?.rating);
-  console.log(product?.totalRating);
-
   async function calculate() {
     const totRating = product?.totalRating;
     const updatedTotalRating = totRating + 1;
@@ -84,7 +81,7 @@ function Ratings() {
     e.preventDefault();
     const calculatedRating = await calculate();
     console.log(calculatedRating);
-    await updateMedicine(calculatedRating, product._id);
+    await updateStar(calculatedRating, product._id);
     setRender(!render);
     setGiveRating(!giveRating);
   }
