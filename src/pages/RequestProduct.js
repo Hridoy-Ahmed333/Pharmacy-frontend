@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getSupplies } from "../api/supplyApi";
 import styled from "styled-components";
+
 import SupplyButtonsComponent from "../Components/SupplyButtonsComponent";
 
 const Container = styled.div`
@@ -9,6 +10,7 @@ const Container = styled.div`
   align-items: center;
   justify-items: center;
   width: 100%;
+  margin-top: 3rem;
 `;
 
 const StyledDiv = styled.div`
@@ -16,91 +18,91 @@ const StyledDiv = styled.div`
   width: 70%;
   display: flex;
   justify-content: space-between;
-  background-color: ${(props) =>
-    props.index % 2 === 0 ? "#F5F5F5" : "#FFFFFF"};
+  background-color: ${({ "data-index": index }) =>
+    index % 2 === 0 ? "#F5F5F5" : "#FFFFFF"};
   &:hover {
-    background-color: ${(props) =>
-      props.index % 2 === 0 ? "#E5E5E5" : " #f0f0f0;"};
+    background-color: ${({ "data-index": index }) =>
+      index % 2 === 0 ? "#E5E5E5" : "#f0f0f0;"};
   }
 `;
 
 const PicDiv = styled.div`
   flex: 0.5;
-  width: 100%; // Fixed width
-  height: 100%; // Fixed height
-  border: 1px solid #000; // Single border around each PicDiv
-  display: flex; // Use flex to center content
-  justify-content: center; // Center content horizontally
-  align-items: center; // Center content vertically
-  overflow: hidden; // Hide any content that exceeds the bounds
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
 `;
 
-// Create a styled div for each part
 const ButtonDiv = styled.div`
   flex: 1;
-  width: 100%; // Fixed width
-  height: 100%; // Fixed height
-  border: 1px solid #000; // Single border around each PicDiv
-  display: flex; // Use flex to center content
-  justify-content: center; // Center content horizontally
-  align-items: center; // Center content vertically
-  overflow: hidden; // Hide any content that exceeds the bounds
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
 `;
 
 const AmountDiv = styled.div`
   flex: 0.5;
-  width: 100%; // Fixed width
-  height: 100%; // Fixed height
-  border: 1px solid #000; // Single border around each PicDiv
-  display: flex; // Use flex to center content
-  justify-content: center; // Center content horizontally
-  align-items: center; // Center content vertically
-  overflow: hidden; // Hide any content that exceeds the bounds
+  width: 100%;
+  height: 100%;
+  font-weight: 700;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
 `;
 
 const PriceDiv = styled.div`
   flex: 0.5;
-  width: 100%; // Fixed width
-  height: 100%; // Fixed height
-  border: 1px solid #000; // Single border around each PicDiv
-  display: flex; // Use flex to center content
-  justify-content: center; // Center content horizontally
-  align-items: center; // Center content vertically
-  overflow: hidden; // Hide any content that exceeds the bounds
+  width: 100%;
+  height: 100%;
+  font-weight: 700;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
 `;
 
 const NameDiv = styled.div`
   flex: 0.5;
-  width: 100%; // Fixed width
-  height: 100%; // Fixed height
-  border: 1px solid #000; // Single border around each PicDiv
-  display: flex; // Use flex to center content
-  justify-content: center; // Center content horizontally
-  align-items: center; // Center content vertically
-  overflow: hidden; // Hide any content that exceeds the bounds
+  width: 100%;
+  height: 100%;
+  font-weight: 700;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
 `;
 
 const DateDiv = styled.div`
   flex: 0.7;
-  width: 100%; // Fixed width
-  height: 100%; // Fixed height
-  border: 1px solid #000; // Single border around each PicDiv
-  display: flex; // Use flex to center content
-  justify-content: center; // Center content horizontally
-  align-items: center; // Center content vertically
-  overflow: hidden; // Hide any content that exceeds the bounds
+  width: 100%;
+  height: 100%;
+  font-weight: 700;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
 `;
 
 const ProductImage = styled.img`
-  object-fit: cover; // Ensure the image covers the entire area of the container
-  width: 85%; // Set the width to  85% of the container
-  height: 85%; // Set the height to  85% of the container
-  max-width: 100%; // Prevent the image from overflowing the container
-  max-height: 100%; // Prevent the image from overflowing the container
+  object-fit: cover;
+  width: 85%;
+  height: 85%;
+  max-width: 100%;
+  max-height: 100%;
 `;
 
 function RequestProduct() {
   const [supplies, setSupplies] = useState(null);
+
   function formatISODate(isoDateString) {
     // Create a Date object from the ISO string
     const date = new Date(isoDateString);
@@ -134,38 +136,44 @@ function RequestProduct() {
 
     fetchData();
   }, []);
-  console.log(supplies);
+  //console.log(supplies);
 
   return (
-    <Container>
-      <StyledDiv>
-        <PicDiv>Image</PicDiv>
-        <NameDiv>Name</NameDiv>
-        <AmountDiv>Amount</AmountDiv>
-        <PriceDiv>Price</PriceDiv>
-        <DateDiv>Date</DateDiv>
-        <ButtonDiv>Buttons</ButtonDiv>
-      </StyledDiv>
-      {supplies?.map((el, index) => {
-        return (
-          <StyledDiv key={index} index={index}>
-            <PicDiv>
-              <ProductImage
-                src={`http://localhost:8080/images/${el?.product?.image}`}
-                alt="Product"
-              />
-            </PicDiv>
-            <NameDiv>{el?.product?.name}</NameDiv>
-            <AmountDiv>{el?.el?.amount}</AmountDiv>
-            <PriceDiv>{el?.el?.totalCost}</PriceDiv>
-            <DateDiv>{formatISODate(el?.el?.time)}</DateDiv>
-            <ButtonDiv>
-              <SupplyButtonsComponent />
-            </ButtonDiv>
-          </StyledDiv>
-        );
-      })}
-    </Container>
+    <div>
+      <h1>Requested Supply Orders</h1>
+      <Container>
+        <StyledDiv>
+          <PicDiv></PicDiv>
+          <NameDiv>Name</NameDiv>
+          <AmountDiv>Total Item</AmountDiv>
+          <PriceDiv>Price</PriceDiv>
+          <DateDiv>Date</DateDiv>
+          <ButtonDiv></ButtonDiv>
+        </StyledDiv>
+        {supplies
+          ?.slice()
+          .reverse()
+          .map((el, index) => {
+            return (
+              <StyledDiv key={el.el._id} data-index={index}>
+                <PicDiv>
+                  <ProductImage
+                    src={`http://localhost:8080/images/${el?.product?.image}`}
+                    alt="Product"
+                  />
+                </PicDiv>
+                <NameDiv>{el?.product?.name}</NameDiv>
+                <AmountDiv>{el?.el?.amount}</AmountDiv>
+                <PriceDiv>{el?.el?.totalCost}</PriceDiv>
+                <DateDiv>{formatISODate(el?.el?.time)}</DateDiv>
+                <ButtonDiv>
+                  <SupplyButtonsComponent product={el} />
+                </ButtonDiv>
+              </StyledDiv>
+            );
+          })}
+      </Container>
+    </div>
   );
 }
 

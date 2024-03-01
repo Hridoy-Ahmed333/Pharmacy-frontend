@@ -5,7 +5,7 @@ import { getMedicine, searchMedicine } from "../api/medicineApi";
 import { useLocation, useNavigate } from "react-router-dom";
 import UserContext from "../context/UserContext";
 import { CartContext } from "../context/CartContext";
-
+import { FaCartPlus } from "react-icons/fa6";
 const HeaderWrapper = styled.header`
   display: flex;
   justify-content: space-between;
@@ -152,7 +152,16 @@ function Header() {
         {isSupplier && <NavLink href="request">Request</NavLink>}
         {isAdmin && <NavLink href="addProduct">Add Product</NavLink>}
         <NavLink href="/">Products</NavLink>
-        <NavLink href="/cart">Cart({cartAmount})</NavLink>
+        {cartAmount ? (
+          <NavLink href="/cart">
+            <FaCartPlus size={32} color="red" />
+            {cartAmount ? "!" : ""}
+          </NavLink>
+        ) : (
+          <NavLink href="/cart">
+            <FaCartPlus size={32} />
+          </NavLink>
+        )}
         <NavLink href="/other">other</NavLink>
       </NavLinks>
     </HeaderWrapper>

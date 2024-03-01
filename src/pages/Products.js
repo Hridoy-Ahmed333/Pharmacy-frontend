@@ -10,6 +10,7 @@ import { searchByStock, searchMedicine } from "../api/medicineApi";
 import UserContext from "../context/UserContext";
 
 const Container = styled.div`
+  margin-top: 3rem;
   display: flex;
   min-height: 80vh; // Ensure the container takes at least the full viewport height
   height: 100%; // Take up any remaining space if the content is less than the viewport height
