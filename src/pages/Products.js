@@ -189,7 +189,7 @@ function Products() {
     setIsFilter(!isFilter);
     await handleFilter(tempFilter);
   }
-  const user = useContext(UserContext);
+  const { user } = useContext(UserContext);
 
   const isAdmin = user?.role === "admin";
 

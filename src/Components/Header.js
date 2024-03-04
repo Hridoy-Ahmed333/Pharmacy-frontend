@@ -153,7 +153,7 @@ function Header() {
         {isSupplier && <NavLink href="request">Request</NavLink>}
         {isAdmin && <NavLink href="addProduct">Add Product</NavLink>}
         <NavLink href="/">Products</NavLink>
-        {cartAmount ? (
+        {/* {cartAmount ? (
           <NavLink href="/cart">
             <FaCartPlus size={32} color="red" />
             {cartAmount ? "!" : ""}
@@ -162,13 +162,13 @@ function Header() {
           <NavLink href="/cart">
             <FaCartPlus size={32} />
           </NavLink>
-        )}
+        )} */}
         <NavLink href="/other">other</NavLink>
-        {user?.role === "visitor" ? (
+        {/* {user?.role === "visitor" ? (
           <NavLink href="/login">Sign in</NavLink>
         ) : (
           <Logout />
-        )}
+        )} */}
       </NavLinks>
     </HeaderWrapper>
   );
