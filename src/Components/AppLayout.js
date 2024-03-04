@@ -4,7 +4,7 @@ import styled from "styled-components";
 import Footer from "./Footer";
 import { SearchProvider } from "../context/SearchContext";
 import UserContext from "../context/UserContext";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CartContext } from "../context/CartContext";
 import Modal from "./Modal";
 import EditComp from "./EditComp";
@@ -35,11 +35,21 @@ const Container = styled.div`
 
 function AppLayout() {
   const { setCartAmount } = useContext(CartContext);
-  const userData = {
-    name: "Md. Rubayat Hossain Ridoy",
-    _id: 1,
-    role: "admin",
-  };
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) {
+      setUser({
+        name: "unknow",
+        _id: 0,
+        role: "visitor",
+      });
+    } else {
+      setUser(user);
+    }
+  }, []);
+
   useEffect(() => {
     const storedCartAmount = localStorage.getItem("cartAmount");
     if (storedCartAmount) {
@@ -47,12 +57,15 @@ function AppLayout() {
       setCartAmount(parseInt(storedCartAmount, 10));
     }
   }, [setCartAmount]);
+  const resetUserContext = () => {
+    setUser(null);
+  };
   return (
     <div>
       <ProductProvider>
         <ModalProvider>
           <StyledAppLayout>
-            <UserContext.Provider value={userData}>
+            <UserContext.Provider value={{ user, resetUserContext }}>
               <SearchProvider>
                 <Header />
                 <Main>

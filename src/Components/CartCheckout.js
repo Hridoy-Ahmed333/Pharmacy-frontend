@@ -1,4 +1,7 @@
+import { useContext, useEffect } from "react";
 import styled from "styled-components";
+import { CartContext } from "../context/CartContext";
+import { useNavigate } from "react-router-dom";
 
 const Button = styled.button`
   height: 2.5rem;
@@ -51,7 +54,17 @@ const Container = styled.div`
 
 function CartCheckout({ cart, setCart }) {
   // console.log(cart);
+  const {
+    cart: context,
+    setCart: setContext,
+    cartAmount,
+    setCartAmount,
+  } = useContext(CartContext);
 
+  useEffect(() => {
+    setContext(cart);
+  }, [cart, setContext]);
+  const navigate = useNavigate();
   const totalItem = cart?.reduce((accumulator, currentValue) => {
     const totalItem = accumulator + currentValue.total;
     return totalItem;
@@ -75,19 +88,21 @@ function CartCheckout({ cart, setCart }) {
       id: el._id,
       name: el.name,
       inTotal: el.total,
-      sellPrice: el.discountPercentage
-        ? (el.price - (el.price * el.discountPercentage) / 100) * el.total
-        : el.price * el.total,
+      // sellPrice: el.discountPercentage
+      //   ? (el.price - (el.price * el.discountPercentage) / 100) * el.total
+      //   : el.price * el.total,
     };
   });
   const order = {
     totalItem: totalItem,
-    totalValue: totalValue,
+    //totalValue: totalValue,
     OrderItemDetails: OrderItemDetails,
   };
 
   function clickHandle() {
-    console.log(order);
+    localStorage.setItem("order", JSON.stringify(order));
+
+    navigate("/checkout");
   }
   return (
     <Container>

@@ -215,130 +215,127 @@ const BottomEl = styled.div`
 `;
 
 function Cart() {
-  const [cart, setCart] = useState([]);
-  const { setCartAmount } = useContext(CartContext);
-  const cartString = localStorage.getItem("cart");
-  const items = JSON.parse(cartString);
+  const [items, setItems] = useState(null);
+  const [cart, setCart] = useState(false);
 
   useEffect(() => {
-    async function fetchCartItems() {
-      const cartString = localStorage.getItem("cart");
-
-      if (!cartString) return;
-
-      try {
-        const items = JSON.parse(cartString);
-        const product = await Promise.all(
-          items.map(async (el) => {
-            const pro = await getMedicineById(el.id);
-            return { ...pro, total: el.totalNumber };
-          })
-        );
-        if (cartString) {
-          setCart(JSON.parse(cartString));
-        } else {
-        }
-        setCart(product);
-      } catch (error) {
-        console.error("Error fetching cart items:", error);
-        // Handle the error appropriately, e.g., show an error message to the user
-      }
+    async function runFirst() {
+      const med = JSON.parse(localStorage.getItem("cart"));
+      setItems(() => med);
     }
-
-    fetchCartItems();
-  }, []);
+    runFirst();
+  }, [cart]);
 
   function handleClick() {
     localStorage.removeItem("cart");
     localStorage.removeItem("cartAmount");
-    setCart([]);
-    setCartAmount(0);
+    setItems([null]);
   }
+
   return (
     <div>
+      return (
       <div>
-        <h1>Cart Items</h1>
-        {items ? (
-          items.length > 0 ? (
-            <div>
+        <div>
+          <h1>Cart Items</h1>
+          {items ? (
+            items.length > 0 ? (
+              <div>
+                <Container>
+                  <StyledDiv>
+                    <PicDiv></PicDiv>
+                    <NameDiv>Name</NameDiv>
+                    <AmountDiv>Total Item</AmountDiv>
+                    <PriceDiv>Price</PriceDiv>
+                    <ButtonDiv></ButtonDiv>
+                    <StockDiv></StockDiv>
+                    <CrossDiv></CrossDiv>
+                  </StyledDiv>
+                  {items?.map((el, index) => (
+                    <CartEl
+                      key={el.id}
+                      med={el.id}
+                      index={index}
+                      totalNumber={el.totalNumber}
+                      setCart={setCart}
+                    />
+                  ))}
+                </Container>
+                <BottomEl>
+                  <DeleteButton onClick={handleClick}>
+                    Clear The Cart
+                  </DeleteButton>
+                  <CartCheckout />
+                </BottomEl>
+              </div>
+            ) : (
               <Container>
-                <StyledDiv>
-                  <PicDiv></PicDiv>
-                  <NameDiv>Name</NameDiv>
-                  <AmountDiv>Total Item</AmountDiv>
-                  <PriceDiv>Price</PriceDiv>
-                  <ButtonDiv></ButtonDiv>
-                  <StockDiv></StockDiv>
-                  <CrossDiv></CrossDiv>
-                </StyledDiv>
-                {cart?.map((el, index) => (
-                  <CartEl
-                    el={el}
-                    index={index}
-                    cart={cart}
-                    items={items}
-                    setCart={setCart}
-                    key={el._id}
-                  />
-                ))}
+                <NoItem>No Item in The Cart</NoItem>
               </Container>
-              <BottomEl>
-                <DeleteButton onClick={handleClick}>
-                  Clear The Cart
-                </DeleteButton>
-                <CartCheckout cart={cart} setCart={setCart} />
-              </BottomEl>
-            </div>
+            )
           ) : (
             <Container>
               <NoItem>No Item in The Cart</NoItem>
             </Container>
-          )
-        ) : (
-          <Container>
-            <NoItem>No Item in The Cart</NoItem>
-          </Container>
-        )}
+          )}
+        </div>
       </div>
+      );
     </div>
   );
 }
 
-function CartEl({ el, index, cart, setCart, items }) {
+function CartEl({ med, index, totalNumber, setCart }) {
+  const [items, setItems] = useState(null);
+  const [el, setEl] = useState(null);
   const { setCartAmount } = useContext(CartContext);
+
   function removeElement(array, elementToRemove) {
-    const med = JSON.parse(localStorage.getItem("cart"));
+    // Get the current cart from local storage
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    // Calculate the new cart amount by subtracting the totalNumber of the item to remove
+    const cartAmount = Number(localStorage.getItem("cartAmount")) || 0;
+    const itemToRemove = cart[elementToRemove];
+    const itemTotalNumber = itemToRemove?.totalNumber || 0;
+    const newCartAmount = cartAmount - itemTotalNumber;
 
-    const medItem = med[index].totalNumber;
-    const cartAmount = Number(localStorage.getItem("cartAmount"));
-    const remain = cartAmount - medItem;
-    setCartAmount(remain);
-    localStorage.setItem("cartAmount", remain.toString());
+    // Update the cartAmount in local storage
+    localStorage.setItem("cartAmount", newCartAmount.toString());
 
+    // Remove the item from the cart array
     const newArr = array.filter((_, index) => index !== elementToRemove);
+
+    // Update the cart in local storage
+    localStorage.setItem("cart", JSON.stringify(newArr));
+
     return newArr;
   }
 
   async function handleClick(items, index) {
     const newItems = removeElement(items, index);
     localStorage.setItem("cart", JSON.stringify(newItems));
-
-    const cartAmount = Number(localStorage.getItem("cartAmount"));
-
-    const cartString = localStorage.getItem("cart");
-    const newItem = JSON.parse(cartString);
-    if (!cartString) return;
-
-    const product = await Promise.all(
-      newItem.map(async (el) => {
-        const pro = await getMedicineById(el.id);
-        return { ...pro, total: el.totalNumber };
-      })
-    );
-    setCart(product);
+    setCart((a) => !a);
   }
+
+  useEffect(() => {
+    async function fetchData() {
+      const medi = JSON.parse(localStorage.getItem("cart"));
+      setItems(medi);
+      if (med) {
+        const res = await getMedicineById(med);
+        setEl(res);
+      }
+    }
+    fetchData();
+  }, [med]); // Removed `el` from the dependency array
+  console.log(el);
+
+  if (!el) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <StyledDiv key={el._id} data-index={index}>
+    <StyledDiv key={el?._id} data-index={index}>
       <PicDiv>
         <ProductImage
           src={`http://localhost:8080/images/${el?.image}`}
@@ -346,24 +343,25 @@ function CartEl({ el, index, cart, setCart, items }) {
         />
       </PicDiv>
       <NameDiv>{el?.name}</NameDiv>
-      <AmountDiv>{el?.total}</AmountDiv>
+      <AmountDiv>{totalNumber}</AmountDiv>
       <PriceDiv>
-        {el.discountPercentage ? (
+        {el?.discountPercentage ? (
           <>
-            {(el.price - (el.price * el.discountPercentage) / 100) * el.total}
+            {(el.price - (el.price * el.discountPercentage) / 100) *
+              totalNumber}
             <TakaSpan>৳</TakaSpan> <DiscountSpan>(with Discount)</DiscountSpan>
           </>
         ) : (
           <>
-            {el?.total * el.price} <TakaSpan>৳</TakaSpan>
+            {totalNumber * el?.price} <TakaSpan>৳</TakaSpan>
           </>
         )}
       </PriceDiv>
 
       <ButtonDiv>
-        <CartButton cart={cart} setCart={setCart} index={index} />
+        <CartButton />
       </ButtonDiv>
-      <StockDiv>{el.stock} items are available in stock</StockDiv>
+      <StockDiv>{el?.stock} items are available in stock</StockDiv>
       <CrossDiv>
         <CrossButton onClick={() => handleClick(items, index)}>
           &#x274C;
@@ -373,71 +371,6 @@ function CartEl({ el, index, cart, setCart, items }) {
   );
 }
 
-function CartButton({ cart, setCart, index }) {
-  const [value, setValue] = useState(cart[index].total);
-
-  function change(value) {
-    if (value[index].total > 0 && value[index].total <= cart[index].stock) {
-      setCart(value);
-      //localStorage.setItem("cart", JSON.stringify(value));
-      console.log(cart);
-    }
-  }
-  const handleQuantityChange = (e) => {
-    const newQuantity = Number(e.target.value);
-
-    // Create a new cart array with the updated item
-    const updatedCart = cart?.map((item, idx) => {
-      if (idx === index) {
-        return { ...item, total: newQuantity };
-      }
-      return item;
-    });
-    setValue(Number(e.target.value));
-    change(updatedCart);
-  };
-  function handleClick(sign) {
-    const newQuantity = value;
-    const updatedCart = cart?.map((item, idx) => {
-      if (idx === index) {
-        if (sign === "-") {
-          setValue(newQuantity - 1);
-          return { ...item, total: newQuantity - 1 };
-        }
-        if (sign === "+") {
-          setValue(newQuantity + 1);
-          return { ...item, total: newQuantity + 1 };
-        }
-      }
-      return item;
-    });
-
-    change(updatedCart);
-  }
-
-  return (
-    <div>
-      <ButtonContainer>
-        <StyledButton
-          // disabled={cart[index].total <= 1}
-          onClick={(e) => handleClick("-")}
-        >
-          &#x2212;
-        </StyledButton>
-        <StyledInput
-          type="number"
-          value={value}
-          onChange={handleQuantityChange}
-        />
-        <StyledButton
-          //disabled={cart[index].stock - 1 < cart[index].total}
-          onClick={() => handleClick("+")}
-        >
-          &#x2B;
-        </StyledButton>
-      </ButtonContainer>
-    </div>
-  );
-}
+function CartButton() {}
 
 export default Cart;

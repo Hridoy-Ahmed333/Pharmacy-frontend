@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import ProductDetailsWhole from "../Components/ProductDetailsWhole";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { getMedicineById } from "../api/medicineApi";
 import SingleProductContext from "../context/SingleProductContext";
@@ -22,7 +22,7 @@ function ProductDetail() {
   const [render, setRender] = useState(true);
   const params = useParams();
   const { setProduct: setPro, reren } = useContext(ProductContext);
-
+  const navigate = useNavigate();
   const productId = params.id;
   const value = {
     render,
@@ -34,15 +34,19 @@ function ProductDetail() {
     const fetchData = async () => {
       try {
         const response = await getMedicineById(productId);
+        if (!response) {
+          navigate("*"); // Redirect to Page Not Found if product does not exist
+        }
         setProduct(response);
         setPro(response);
       } catch (error) {
+        navigate("*");
         console.error("Error fetching product:", error);
       }
     };
 
     fetchData();
-  }, [productId, render, setPro, reren]);
+  }, [productId, render, setPro, reren, navigate]);
 
   return (
     <SingleProductContext.Provider value={value}>

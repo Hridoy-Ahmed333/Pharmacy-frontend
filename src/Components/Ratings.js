@@ -1,8 +1,9 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import StarRating from "./StarRating";
 import styled from "styled-components";
 import SingleProductContext from "../context/SingleProductContext";
 import { updateMedicine, updateStar } from "../api/medicineApi";
+import UserContext from "../context/UserContext";
 
 const Container = styled.div`
   margin: 0 auto;
@@ -14,6 +15,14 @@ const Container = styled.div`
   margin-top: 2rem;
   gap: 1rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+`;
+
+const StyledDiv = styled.div`
+  margin: 0 auto;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: red;
 `;
 
 const Button = styled.button`
@@ -65,10 +74,9 @@ const ButtonRating = styled.button`
 
 function Ratings() {
   const { product, render, setRender } = useContext(SingleProductContext);
-
   const [CurRating, setCurRating] = useState();
   const [giveRating, setGiveRating] = useState(false);
-
+  const { user } = useContext(UserContext);
   async function calculate() {
     const totRating = product?.totalRating;
     const updatedTotalRating = totRating + 1;
@@ -98,7 +106,11 @@ function Ratings() {
       {giveRating && (
         <>
           <StarRating maxRating={10} size={36} onSetRating={setCurRating} />
-          <Button onClick={handleRating}>Add Rating</Button>
+          {!user.role === "visitor" ? (
+            <Button onClick={handleRating}>Add Rating</Button>
+          ) : (
+            <StyledDiv>Sign in to give rating</StyledDiv>
+          )}
         </>
       )}
     </Container>

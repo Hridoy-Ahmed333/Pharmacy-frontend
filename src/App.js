@@ -12,8 +12,14 @@ import AddProduct from "./pages/AddProduct";
 import RequestProduct from "./pages/RequestProduct";
 
 import { CartProvider } from "./context/CartContext";
+import Checkout from "./pages/Checkout";
+import { useState } from "react";
+import Success from "./pages/Success";
+import Cancel from "./pages/Cancel";
 
 function App() {
+  const [visitedCart, setVisitedCart] = useState(false);
+
   return (
     <CartProvider>
       <Router>
@@ -22,10 +28,12 @@ function App() {
             <Route path="/" element={<Products />} />
             <Route path="/:id" element={<ProductDetail />} />
             <Route path="cart" element={<Cart />} />
-            <Route path="order" element={<Order />} />
             <Route path="other" element={<Other />} />
             <Route path="request" element={<RequestProduct />} />
             <Route path="addProduct" element={<AddProduct />} />
+            <Route path="checkout" element={<Checkout />} />
+            <Route path="success" element={<Success />} />
+            <Route path="cancel" element={<Cancel />} />
           </Route>
           <Route path="*" element={<PageNotFound />} />
           <Route path="login" element={<Login />} />

@@ -99,7 +99,7 @@ const Span = styled.span`
 
 const ProductCard = ({ product, onDelete }) => {
   const navigate = useNavigate();
-  const user = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const isAdmin = user.role === "admin";
   const handleDelete = async () => {
     if (typeof onDelete === "function") {

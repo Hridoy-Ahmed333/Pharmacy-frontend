@@ -191,7 +191,7 @@ function Products() {
   }
   const user = useContext(UserContext);
 
-  const isAdmin = user.role === "admin";
+  const isAdmin = user?.role === "admin";
 
   return (
     <Container>

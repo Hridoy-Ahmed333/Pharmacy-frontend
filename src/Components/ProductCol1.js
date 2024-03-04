@@ -81,8 +81,8 @@ function ProductCol1() {
   const [res, setRes] = useState(false);
   const { product } = useContext(SingleProductContext);
   const { show, setShow } = useContext(ModalContext);
-  const user = useContext(UserContext);
-  const isAdmin = user.role === "admin";
+  const { user } = useContext(UserContext);
+  const isAdmin = user?.role === "admin";
   function handleClick() {
     setShow(!show);
   }
@@ -91,6 +91,7 @@ function ProductCol1() {
   }
   return (
     <Container>
+      <div>{user?.role}</div>
       <Name>{product?.name}</Name>
       <Cat>{product?.category}</Cat>
       <Brand>{product?.brand}</Brand>

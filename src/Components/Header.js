@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import UserContext from "../context/UserContext";
 import { CartContext } from "../context/CartContext";
 import { FaCartPlus } from "react-icons/fa6";
+import Logout from "./Logout";
 const HeaderWrapper = styled.header`
   display: flex;
   justify-content: space-between;
@@ -102,7 +103,7 @@ function Header() {
     applySearch,
     applySearchResults,
   } = useContext(SearchContext);
-  const user = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const showSearchBox = location.pathname === "/";
   useEffect(() => {
     // This effect runs whenever searchResults changes
@@ -130,8 +131,8 @@ function Header() {
     navigate(`/`);
   };
 
-  const isAdmin = user.role === "admin";
-  const isSupplier = user.role === "supplier";
+  const isAdmin = user?.role === "admin";
+  const isSupplier = user?.role === "supplier";
 
   return (
     <HeaderWrapper>
@@ -163,6 +164,11 @@ function Header() {
           </NavLink>
         )}
         <NavLink href="/other">other</NavLink>
+        {user?.role === "visitor" ? (
+          <NavLink href="/login">Sign in</NavLink>
+        ) : (
+          <Logout />
+        )}
       </NavLinks>
     </HeaderWrapper>
   );
