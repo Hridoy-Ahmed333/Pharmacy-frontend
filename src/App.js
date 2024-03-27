@@ -16,6 +16,8 @@ import Checkout from "./pages/Checkout";
 import { useState } from "react";
 import Success from "./pages/Success";
 import Cancel from "./pages/Cancel";
+import UserOrder from "./pages/UserOrder";
+import AdminOrder from "./pages/AdminOrder";
 
 function App() {
   const [visitedCart, setVisitedCart] = useState(false);
@@ -34,6 +36,8 @@ function App() {
             <Route path="checkout" element={<Checkout />} />
             <Route path="success" element={<Success />} />
             <Route path="cancel" element={<Cancel />} />
+            <Route path="userOrder" element={<UserOrder />} />
+            <Route path="adminOrders" element={<AdminOrder />} />
           </Route>
           <Route path="*" element={<PageNotFound />} />
           <Route path="login" element={<Login />} />

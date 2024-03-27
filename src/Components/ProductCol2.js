@@ -1,10 +1,11 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import styled from "styled-components";
 import SingleProductContext from "../context/SingleProductContext";
 import Ratings from "./Ratings";
 import TotalRating from "./TotalRating";
 import PriceComp from "./PriceComp";
 import AddToCartComp from "./AddToCartComp";
+import UserContext from "../context/UserContext";
 
 const Container = styled.div`
   display: flex;
@@ -33,14 +34,24 @@ const ProductImage = styled.img`
   max-height: 100%; // Prevent the image from overflowing the container
 `;
 
+const OutOfStock = styled.div`
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: red;
+`;
+
 const RatingContainer = styled.div`
   margin: 0 auto;
   margin-bottom: 2rem;
 `;
 
 function ProductCol2() {
+  const [totalPrice, setTotalPrice] = useState(1);
   const { product } = useContext(SingleProductContext);
   const productImage = product?.image;
+  const { user } = useContext(UserContext);
+  const isAdmin = user?.role === "admin";
+
   return (
     <Container>
       <PictureContainer>
@@ -56,8 +67,27 @@ function ProductCol2() {
         <TotalRating />
         <Ratings />
       </RatingContainer>
-      <PriceComp product={product} />
-      <AddToCartComp product={product} />
+
+      <PriceComp
+        product={product}
+        totalPrice={totalPrice}
+        setTotalPrice={setTotalPrice}
+      />
+      {isAdmin ? (
+        <OutOfStock>Admin cannoy add product to the cart</OutOfStock>
+      ) : (
+        <>
+          {product?.stock > 0 ? (
+            <AddToCartComp
+              product={product}
+              totalPrice={totalPrice}
+              setTotalPrice={setTotalPrice}
+            />
+          ) : (
+            <OutOfStock>This product is out of stock</OutOfStock>
+          )}
+        </>
+      )}
     </Container>
   );
 }

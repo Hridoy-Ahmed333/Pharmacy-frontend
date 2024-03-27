@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import { FaFacebookSquare } from "react-icons/fa";
 import { FaSquareXTwitter } from "react-icons/fa6";
-import { FaGithub } from "react-icons/fa";
+import { TfiYoutube } from "react-icons/tfi";
+import { ImMail } from "react-icons/im";
 
 const FooterWrapper = styled.header`
   display: flex;
@@ -57,8 +58,8 @@ function Footer() {
       <Content1>
         <div>About This Website</div>
         <div>Copyright Reserved &#169;</div>
-        <div>Mobile Number: 01994083178</div>
-        <div>Email: hridoyAhmedf5@gmail.com</div>
+        <div>Terms and condition</div>
+        <div>Policy</div>
       </Content1>
       <Content2>
         <Contact>Contact Me</Contact>
@@ -78,11 +79,18 @@ function Footer() {
             <FaSquareXTwitter size={32} />
           </StyledLink>
           <StyledLink
-            href="https://github.com/Hridoy-Ahmed333"
+            href="mailto:hridoy@gmail.com?view=cm&fs=1"
             target="_blank"
             rel="noopener noreferrer"
           >
-            <FaGithub size={32} />
+            <ImMail size={32} />
+          </StyledLink>
+          <StyledLink
+            href="https://www.youtube.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <TfiYoutube size={32} />
           </StyledLink>
         </Icon>
       </Content2>

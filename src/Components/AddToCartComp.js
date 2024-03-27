@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { CartContext } from "../context/CartContext";
 
@@ -84,7 +84,7 @@ const CartInput = styled.input`
 //   totalNumber: 1,
 // };
 
-function AddToCartComp({ product }) {
+function AddToCartComp({ product, totalPrice, setTotalPrice }) {
   const [amount, setAmount] = useState(1);
   const { setCartAmount } = useContext(CartContext);
 
@@ -128,13 +128,26 @@ function AddToCartComp({ product }) {
 
   return (
     <Container>
-      <CartForm amount={amount} setAmount={setAmount} />
+      <CartForm
+        amount={amount}
+        setAmount={setAmount}
+        product={product}
+        totalPrice={totalPrice}
+        setTotalPrice={setTotalPrice}
+      />
       <Button onClick={(e) => clickHandler(e)}>Add to Cart</Button>
     </Container>
   );
 }
 
-function CartForm({ amount, setAmount }) {
+function CartForm({ amount, setAmount, product, totalPrice, setTotalPrice }) {
+  useEffect(() => {
+    function total() {
+      setTotalPrice(amount);
+    }
+    total();
+  }, [amount, product?.discountPercentage, setTotalPrice]);
+
   function clickHandler(sign) {
     if (sign === "-") {
       if (amount <= 1) {
@@ -145,6 +158,12 @@ function CartForm({ amount, setAmount }) {
       }
     }
     if (sign === "+") {
+      if (amount > product?.stock) {
+        setAmount(product?.stock);
+
+        alert("No more item in the stock");
+        return;
+      }
       setAmount((amount) => amount + 1);
     }
   }
@@ -154,7 +173,11 @@ function CartForm({ amount, setAmount }) {
       <CartInput
         value={amount}
         onChange={(e) => {
-          setAmount(Number(e.target.value));
+          setAmount(
+            Number(
+              e.target.value > product?.stock ? product?.stock : e.target.value
+            )
+          );
         }}
       ></CartInput>
       <CartButton onClick={() => clickHandler("+")}>+</CartButton>

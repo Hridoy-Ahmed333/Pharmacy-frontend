@@ -54,7 +54,7 @@ function ProductDetail() {
         <ProductDetailComponent>
           <ProductDetailsWhole />
         </ProductDetailComponent>
-        <CommmentContainer>Comments</CommmentContainer>
+        {/* <CommmentContainer>Comments</CommmentContainer> */}
       </PageContainer>
     </SingleProductContext.Provider>
   );

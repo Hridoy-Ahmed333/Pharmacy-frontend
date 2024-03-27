@@ -19,20 +19,20 @@ export async function addUser(formData) {
 }
 
 // Function to send a request to the /users route
-async function fetchUsers() {
+export async function fetchUsers() {
   try {
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      throw new Error("No token found in local storage");
-    }
-
-    const response = await fetch("http://localhost:8080/users", {
-      method: "GET",
+    const user = JSON.parse(localStorage.getItem("user"));
+    //const user = localStorage.getItem("user");
+    const token = JSON.parse(localStorage.getItem("user")).token;
+    const response = await fetch("http://localhost:8080/users/getUser", {
+      method: "PATCH",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
+      body: JSON.stringify({
+        user: user,
+      }),
     });
 
     if (!response.ok) {
@@ -40,8 +40,25 @@ async function fetchUsers() {
     }
 
     const data = await response.json();
-    console.log(data);
+    return data;
   } catch (error) {
     console.error("There was a problem with the fetch operation:", error);
+  }
+}
+
+export async function getOneUser(id) {
+  const token = JSON.parse(localStorage.getItem("user")).token;
+  try {
+    const response = await fetch(`http://localhost:8080/users/${id}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await response.json();
+    //console.log(data);
+    return data;
+  } catch (err) {
+    console.log(err);
   }
 }

@@ -55,7 +55,7 @@ function ProductWithPagination() {
   function calcProduct() {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    return products.slice(
+    return products?.slice(
       startIndex,
       endIndex > products.length ? products.length : endIndex
     );
@@ -75,7 +75,7 @@ function ProductWithPagination() {
     }
   };
 
-  const totalPages = Math.ceil(products.length / itemsPerPage);
+  const totalPages = Math.ceil(products?.length / itemsPerPage);
   //console.log(currentPage);
 
   function moveNext() {

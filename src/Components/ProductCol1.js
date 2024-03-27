@@ -91,7 +91,7 @@ function ProductCol1() {
   }
   return (
     <Container>
-      <div>{user?.role}</div>
+      {/* <div>{user?.role}</div> */}
       <Name>{product?.name}</Name>
       <Cat>{product?.category}</Cat>
       <Brand>{product?.brand}</Brand>

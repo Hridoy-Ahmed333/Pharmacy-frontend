@@ -350,7 +350,10 @@ function CartEl({ el, index, cart, setCart, items }) {
       <PriceDiv>
         {el.discountPercentage ? (
           <>
-            {(el.price - (el.price * el.discountPercentage) / 100) * el.total}
+            {(
+              (el.price - (el.price * el.discountPercentage) / 100) *
+              el.total
+            ).toFixed(2)}
             <TakaSpan>৳</TakaSpan> <DiscountSpan>(with Discount)</DiscountSpan>
           </>
         ) : (

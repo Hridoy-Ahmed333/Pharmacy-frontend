@@ -95,20 +95,25 @@ function CartCheckout({ cart, setCart }) {
   });
   const order = {
     totalItem: totalItem,
-    //totalValue: totalValue,
+    totalValue: totalValue,
     OrderItemDetails: OrderItemDetails,
   };
 
-  function clickHandle() {
+  async function clickHandle() {
     localStorage.setItem("order", JSON.stringify(order));
-
-    navigate("/checkout");
+    const token = JSON.parse(localStorage.getItem("user"))?.token;
+    if (token) {
+      navigate("/checkout");
+    } else {
+      alert("Please Log in to buy a product");
+      navigate("/login");
+    }
   }
   return (
     <Container>
       <StyledDiv>You Have {order.totalItem} Items in Your Cart</StyledDiv>
-      <StyledDiv>Total Price: {order.totalValue} Taka</StyledDiv>
-      <Button onClick={clickHandle}>Proceed to Check Out</Button>
+      <StyledDiv>Total Price: {order.totalValue.toFixed(2)} Taka</StyledDiv>
+      <Button onClick={clickHandle}>Order</Button>
     </Container>
   );
 }

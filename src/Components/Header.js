@@ -133,6 +133,7 @@ function Header() {
 
   const isAdmin = user?.role === "admin";
   const isSupplier = user?.role === "supplier";
+  const isUser = user?.role === "user";
 
   return (
     <HeaderWrapper>
@@ -152,23 +153,30 @@ function Header() {
       <NavLinks>
         {isSupplier && <NavLink href="request">Request</NavLink>}
         {isAdmin && <NavLink href="addProduct">Add Product</NavLink>}
+        {isAdmin && <NavLink href="adminOrders">Orders</NavLink>}
         <NavLink href="/">Products</NavLink>
-        {/* {cartAmount ? (
-          <NavLink href="/cart">
-            <FaCartPlus size={32} color="red" />
-            {cartAmount ? "!" : ""}
-          </NavLink>
-        ) : (
-          <NavLink href="/cart">
-            <FaCartPlus size={32} />
-          </NavLink>
-        )} */}
-        <NavLink href="/other">other</NavLink>
-        {/* {user?.role === "visitor" ? (
+        {!isAdmin && (
+          <>
+            {cartAmount ? (
+              <NavLink href="/cart">
+                <FaCartPlus size={32} color="red" />
+                {cartAmount ? "!" : ""}
+              </NavLink>
+            ) : (
+              <NavLink href="/cart">
+                <FaCartPlus size={32} />
+              </NavLink>
+            )}
+          </>
+        )}
+
+        {isAdmin && <NavLink href="/other">Report</NavLink>}
+        {isUser && <NavLink href="/userOrder">User Order</NavLink>}
+        {user?.role === "visitor" ? (
           <NavLink href="/login">Sign in</NavLink>
         ) : (
           <Logout />
-        )} */}
+        )}
       </NavLinks>
     </HeaderWrapper>
   );

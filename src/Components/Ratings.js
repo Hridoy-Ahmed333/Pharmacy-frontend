@@ -106,8 +106,10 @@ function Ratings() {
       {giveRating && (
         <>
           <StarRating maxRating={10} size={36} onSetRating={setCurRating} />
-          {!user.role === "visitor" ? (
+          {user.role === "user" ? (
             <Button onClick={handleRating}>Add Rating</Button>
+          ) : user.role === "admin" ? (
+            <StyledDiv> Admin Cannot give ratings</StyledDiv>
           ) : (
             <StyledDiv>Sign in to give rating</StyledDiv>
           )}

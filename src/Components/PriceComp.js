@@ -34,41 +34,43 @@ const Money = styled.span`
   font-weight: 800;
 `;
 
-function PriceComp({ product }) {
-  return product?.discountPercentage > 0 ? (
-    <DiscountPrice product={product} />
-  ) : (
-    <NormalPrice product={product} />
-  );
+function PriceComp({ product, totalPrice, setTotalPrice }) {
+  return <Price product={product} totalPrice={totalPrice} />;
 }
 
-function DiscountPrice({ product }) {
-  const price = (
-    product?.price -
-    (product?.price / 100) * product?.discountPercentage
-  ).toFixed(2);
+function Price({ product, totalPrice }) {
+  const price2 =
+    totalPrice > 1 ? (product?.price * totalPrice).toFixed(2) : product?.price;
+  const price =
+    totalPrice > 1
+      ? (
+          product?.price * totalPrice -
+          ((product?.price * totalPrice) / 100) * product?.discountPercentage
+        ).toFixed(2)
+      : product?.price - (product?.price / 100) * product?.discountPercentage;
+
   return (
     <Container>
-      <Discount>{product?.discountPercentage}% OFF</Discount>
-      <div>
-        <Span>
-          {product?.price}.00<Money>৳</Money>
-        </Span>
+      {product?.discountPercentage > 0 ? (
+        <>
+          <Discount>{product?.discountPercentage}% OFF</Discount>
+          <div>
+            <Span>
+              {price2}
+              <Money>৳</Money>
+            </Span>
+            <Span2>
+              {price}
+              <Money>৳</Money>
+            </Span2>
+          </div>
+        </>
+      ) : (
         <Span2>
-          {price}
+          {price2}
           <Money>৳</Money>
         </Span2>
-      </div>
-    </Container>
-  );
-}
-
-function NormalPrice({ product }) {
-  return (
-    <Container>
-      <Span2>
-        {product?.price}.00<Money>৳</Money>
-      </Span2>
+      )}
     </Container>
   );
 }
