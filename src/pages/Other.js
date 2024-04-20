@@ -9,7 +9,13 @@ const ParentContainer = styled.div`
   flex-direction: column;
   gap: 3rem;
 `;
-
+const CustomH1 = styled.span`
+  font-size: 2.5rem; // Typical font size for h1
+  font-weight: bold; // Typical font weight for h1
+  color: #28a745; // Green color
+  margin-top: 1rem; // To mimic h1's default margin
+  margin-bottom: 0.5rem; // To mimic h1's default margin
+`;
 function Other() {
   const [products, setProducts] = useState([]);
   useEffect(() => {
@@ -27,6 +33,7 @@ function Other() {
 
   return (
     <ParentContainer>
+      <CustomH1>Dashboard</CustomH1>
       <TotalReportComp products={products} />
       <AllMedRep products={products} />
     </ParentContainer>

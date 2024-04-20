@@ -43,7 +43,7 @@ function Login() {
         <Span onClick={(e) => setSet(!set)}>
           {set ? "Already Have an Account?" : "Don't have an account?"}
         </Span>
-        <Span onClick={handleClick}>Visit Our page</Span>
+        <Span onClick={handleClick}>Home</Span>
       </SpanContainer>
     </FormContainer>
   );

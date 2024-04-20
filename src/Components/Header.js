@@ -25,8 +25,15 @@ const SiteName = styled.span`
   font-size: 2rem;
   font-weight: bold;
   cursor: pointer;
-`;
+  color: #6f42c1; // A vibrant purple color
+  transition: color 0.3s ease, font-size 0.3s ease;
+  font-style: italic;
 
+  &:hover {
+    color: #28a745; // A vibrant green color for hover effect
+    font-size: 2.2rem; // Increase font size on hover
+  }
+`;
 const SearchButton = styled.button`
   background-color: #007bff; // Button color
   color: white; // Text color
@@ -138,7 +145,7 @@ function Header() {
   return (
     <HeaderWrapper>
       <div>
-        <SiteName onClick={handleHeaderClick}>My Website</SiteName>
+        <SiteName onClick={handleHeaderClick}>Hridoy Pharma</SiteName>
 
         {showSearchBox && (
           <>
@@ -151,6 +158,7 @@ function Header() {
         )}
       </div>
       <NavLinks>
+        {isAdmin && <NavLink href="/other">Dashboard</NavLink>}
         {isSupplier && <NavLink href="request">Request</NavLink>}
         {isAdmin && <NavLink href="addProduct">Add Product</NavLink>}
         {isAdmin && <NavLink href="adminOrders">Orders</NavLink>}
@@ -170,7 +178,6 @@ function Header() {
           </>
         )}
 
-        {isAdmin && <NavLink href="/other">Report</NavLink>}
         {isUser && <NavLink href="/userOrder">User Order</NavLink>}
         {user?.role === "visitor" ? (
           <NavLink href="/login">Sign in</NavLink>

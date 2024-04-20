@@ -79,7 +79,11 @@ function LoginForm() {
     console.log(data);
     if (data.token) {
       localStorage.setItem("user", JSON.stringify(data));
-      navigate("/");
+      if (data?.role === "admin") {
+        navigate("/other");
+      } else {
+        navigate("/");
+      }
     } else {
       alert("Wrong password or email");
     }
