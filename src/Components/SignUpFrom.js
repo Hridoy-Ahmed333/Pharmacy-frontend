@@ -115,6 +115,7 @@ function SignUpFrom({ setSet }) {
     ) {
       const res = await addUser(formData);
       console.log(res);
+      alert("Registration Successfull");
     } else {
       alert("Fill the form correctly");
     }

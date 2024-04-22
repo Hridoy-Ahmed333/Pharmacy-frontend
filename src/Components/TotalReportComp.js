@@ -89,18 +89,33 @@ const Text = styled.span`
 
 // The rest of your component code remains unchanged.
 
-function TotalReportComp({ products }) {
+function TotalReportComp({
+  products,
+  setTotalSellMon,
+  setSoldMedCost,
+  setTotalCost,
+  setMedBuy,
+  setSold,
+}) {
   const [sell, setSell] = useState(0);
   const [buy, setBuy] = useState(0);
 
   return (
     <OuterContainer>
       <Container>
-        <TotalProductSellMoney products={products} setSell={setSell} />
-        <SoldMedicineCost products={products} setBuy={setBuy} />
-        <TotalProductBuyMoney products={products} />
-        <BuyMed products={products} />
-        <SoldMed products={products} />
+        <TotalProductSellMoney
+          products={products}
+          setSell={setSell}
+          setTotalSellMon={setTotalSellMon}
+        />
+        <SoldMedicineCost
+          products={products}
+          setBuy={setBuy}
+          setSoldMedCost={setSoldMedCost}
+        />
+        <TotalProductBuyMoney products={products} setTotalCost={setTotalCost} />
+        <BuyMed products={products} setMedBuy={setMedBuy} />
+        <SoldMed products={products} setSold={setSold} />
       </Container>
       {sell > buy ? (
         <Text>Your Total Income is: {(sell - buy).toFixed(2)} Taka</Text>
@@ -114,14 +129,15 @@ function TotalReportComp({ products }) {
   );
 }
 
-function TotalProductSellMoney({ products, setSell }) {
+function TotalProductSellMoney({ products, setSell, setTotalSellMon }) {
   useEffect(() => {
     const sellMoney = products?.map((el) => el?.totalSellMoney);
     const total = sellMoney.reduce((accumulator, currentValue) => {
       return accumulator + currentValue;
     }, 0);
     setSell(total);
-  }, [products, setSell]); // Dependencies array ensures this effect runs when `products` or `setSell` changes
+    setTotalSellMon(total);
+  }, [products, setSell, setTotalSellMon]); // Dependencies array ensures this effect runs when `products` or `setSell` changes
 
   const total = products?.reduce((accumulator, currentValue) => {
     return accumulator + (currentValue?.totalSellMoney || 0);
@@ -135,11 +151,12 @@ function TotalProductSellMoney({ products, setSell }) {
   );
 }
 
-function TotalProductBuyMoney({ products }) {
+function TotalProductBuyMoney({ products, setTotalCost }) {
   const buyMoney = products?.map((el) => el?.totalBuyMone);
   const total = buyMoney.reduce((accumulator, currentValue) => {
     return accumulator + currentValue;
   }, 0);
+  setTotalCost(total);
 
   return (
     <BuyMoneyCard>
@@ -149,12 +166,12 @@ function TotalProductBuyMoney({ products }) {
   );
 }
 
-function BuyMed({ products }) {
+function BuyMed({ products, setMedBuy }) {
   const med = products?.map((el) => el?.totalItemBuy);
   const total = med.reduce((accumulator, currentValue) => {
     return accumulator + currentValue;
   }, 0);
-
+  setMedBuy(total);
   return (
     <BuyMedCard>
       <h3>Total Medicine Bought</h3>
@@ -163,11 +180,12 @@ function BuyMed({ products }) {
   );
 }
 
-function SoldMed({ products }) {
+function SoldMed({ products, setSold }) {
   const med = products?.map((el) => el?.totalItemSold);
   const total = med.reduce((accumulator, currentValue) => {
     return accumulator + currentValue;
   }, 0);
+  setSold(total);
 
   return (
     <SoldMedCard>
@@ -177,7 +195,7 @@ function SoldMed({ products }) {
   );
 }
 
-function SoldMedicineCost({ products, setBuy }) {
+function SoldMedicineCost({ products, setBuy, setSoldMedCost }) {
   useEffect(() => {
     const totalSoldMedCost = products?.map(
       (el) => el?.totalItemSold * el?.buyingPrice
@@ -186,7 +204,8 @@ function SoldMedicineCost({ products, setBuy }) {
       return accumulator + currentValue;
     }, 0);
     setBuy(total);
-  }, [products, setBuy]); // Dependencies array ensures this effect runs when `products` or `setBuy` changes
+    setSoldMedCost(total);
+  }, [products, setBuy, setSoldMedCost]); // Dependencies array ensures this effect runs when `products` or `setBuy` changes
 
   const total = products?.reduce((accumulator, currentValue) => {
     return (
