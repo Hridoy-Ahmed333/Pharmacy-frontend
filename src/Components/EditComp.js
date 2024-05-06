@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { ModalContext } from "../context/ModalContext";
+
 import styled from "styled-components";
 import EditForm from "./EditForm";
 import { ProductContext } from "../context/ProductContext";
@@ -35,15 +35,10 @@ const WrapEditForm = styled.div`
 `;
 
 function EditComp() {
-  const { show, setShow } = useContext(ModalContext);
   const { product, reren, setReren } = useContext(ProductContext);
-  function onClickHandler() {
-    setShow(!show);
-  }
 
   return (
     <EditContainer>
-      <CloseButton onClick={onClickHandler}>X</CloseButton>
       <WrapEditForm>
         <EditForm product={product} reren={reren} setReren={setReren} />
       </WrapEditForm>

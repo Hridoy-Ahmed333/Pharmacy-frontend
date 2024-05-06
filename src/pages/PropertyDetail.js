@@ -1,25 +1,31 @@
 import styled from "styled-components";
-import ProductDetailsWhole from "../Components/ProductDetailsWhole";
+import ProductDetailsWhole from "../Components/FullDetail";
 import { useNavigate, useParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
-import { getMedicineById } from "../api/medicineApi";
 import SingleProductContext from "../context/SingleProductContext";
 import { ProductContext } from "../context/ProductContext";
+import { getById } from "../api/propertyApi";
 
 const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
 `;
+const Picture = styled.img`
+  width: 100%;
+  height: 70vh;
+`;
 
-const ProductDetailComponent = styled.div``;
-
-const CommmentContainer = styled.div`
-  border: 1px solid black;
+const ProductDetailComponent = styled.div`
+  margin-left: 2rem;
+  margin-right: 2rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 `;
 
 function ProductDetail() {
   const [product, setProduct] = useState(null);
   const [render, setRender] = useState(true);
+
   const params = useParams();
   const { setProduct: setPro, reren } = useContext(ProductContext);
   const navigate = useNavigate();
@@ -33,7 +39,7 @@ function ProductDetail() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await getMedicineById(productId);
+        const response = await getById(productId);
         if (!response) {
           navigate("*"); // Redirect to Page Not Found if product does not exist
         }
@@ -51,10 +57,13 @@ function ProductDetail() {
   return (
     <SingleProductContext.Provider value={value}>
       <PageContainer>
+        <Picture
+          src={`http://localhost:8080/images/${product?.image}`}
+          alt={product?.name}
+        />
         <ProductDetailComponent>
           <ProductDetailsWhole />
         </ProductDetailComponent>
-        {/* <CommmentContainer>Comments</CommmentContainer> */}
       </PageContainer>
     </SingleProductContext.Provider>
   );

@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 
-import ProductComponent from "./ProductComponent";
-import { deleteMedicine, getMedicine } from "../api/medicineApi";
+import PropertyComponent from "./PropertyComponent";
+import { deleteProperty, getProperty } from "../api/propertyApi";
 import styled from "styled-components";
 import { SearchContext } from "../context/SearchContext";
 
@@ -12,20 +12,29 @@ const Container = styled.div`
 `;
 const PageNumContainer = styled.div`
   height: 4rem;
-  background-color: red;
   display: flex;
   justify-content: center; /* Center horizontally */
   align-items: center;
 `;
-// const PageNumber = styled.div`
-//   background-color: blue;
-//   margin: 0 auto;
-// `;
 
+const Button = styled.button`
+  top: 0.1rem;
+  right: 0.1rem;
+  border-radius: 100%;
+  border: 1px solid gray;
+  font-size: 1.2rem;
+  color: white;
+  background-color: #2c2c2c;
+  padding: 0.5rem 0.5rem;
+  font-weight: bold;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  transition: background-color 0.3s ease, color 0.3s ease;
+`;
 function ProductWithPagination() {
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 9;
+  const itemsPerPage = 12;
   const { searchResults, search, categoryFilter, inStockFilter } =
     useContext(SearchContext);
 
@@ -41,7 +50,7 @@ function ProductWithPagination() {
           setProducts([]);
           setCurrentPage(1);
         } else {
-          const response = await getMedicine();
+          const response = await getProperty();
           setProducts(response);
         }
       } catch (error) {
@@ -66,7 +75,7 @@ function ProductWithPagination() {
   const handleDelete = async (productId) => {
     try {
       // Call the API to delete the product
-      await deleteMedicine(productId);
+      await deleteProperty(productId);
       // Filter out the deleted product from the state
       setProducts(products.filter((product) => product._id !== productId));
     } catch (error) {
@@ -93,20 +102,24 @@ function ProductWithPagination() {
     setCurrentPage(currentPage - 1);
   }
 
-  //console.log(newProduct.length);
+  function movePage(i) {
+    setCurrentPage(i);
+  }
 
   return (
     <div>
       <Container>
         <ProductComponetContainer>
-          <ProductComponent products={newProduct} onDelete={handleDelete} />
+          <PropertyComponent products={newProduct} onDelete={handleDelete} />
         </ProductComponetContainer>
         <PageNumContainer>
-          <button onClick={movePrev}> &lt;&lt; Previous Page</button>
+          <Button onClick={movePrev}> &lt;&lt; </Button>
           {Array.from({ length: totalPages }).map((_, i) => (
-            <button key={i}>{i + 1}</button>
+            <Button key={i} onClick={() => movePage(i + 1)}>
+              {i + 1}
+            </Button>
           ))}
-          <button onClick={moveNext}>Next Page &gt;&gt;</button>
+          <Button onClick={moveNext}>&gt;&gt;</Button>
         </PageNumContainer>
       </Container>
     </div>

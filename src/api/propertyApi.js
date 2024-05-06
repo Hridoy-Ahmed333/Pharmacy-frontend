@@ -1,7 +1,6 @@
-// Function to fetch all cabins
-export async function getMedicine() {
+export async function getProperty() {
   try {
-    const response = await fetch("http://localhost:8080/medicine");
+    const response = await fetch("http://localhost:8080/property");
     const data = await response.json();
     return data;
   } catch (err) {
@@ -9,8 +8,8 @@ export async function getMedicine() {
   }
 }
 
-export async function getMedicineById(id) {
-  const response = await fetch(`http://localhost:8080/medicine/${id}`);
+export async function getById(id) {
+  const response = await fetch(`http://localhost:8080/property/${id}`);
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
@@ -18,8 +17,8 @@ export async function getMedicineById(id) {
   return data;
 }
 
-export async function deleteMedicine(id) {
-  const res = await fetch(`http://localhost:8080/medicine/${id}`, {
+export async function deleteProperty(id) {
+  const res = await fetch(`http://localhost:8080/property/${id}`, {
     method: "DELETE",
   });
   if (!res.ok) {
@@ -30,9 +29,9 @@ export async function deleteMedicine(id) {
   return data;
 }
 
-export async function addMedicine(formData) {
+export async function addProperty(formData) {
   try {
-    const response = await fetch("http://localhost:8080/medicine", {
+    const response = await fetch("http://localhost:8080/property", {
       method: "POST",
       body: formData, // Send FormData directly
     });
@@ -40,7 +39,7 @@ export async function addMedicine(formData) {
     if (!response.ok) {
       const error = await response.json();
       console.log(error.message);
-      alert("A medicine with this name already exists");
+      alert("A Property with this name already exists");
     }
 
     const data = await response.json();
@@ -51,16 +50,16 @@ export async function addMedicine(formData) {
   }
 }
 
-export async function updateMedicine(formData, id) {
-  console.log("Updating Medicine", formData);
+export async function updateProperty(formData, id) {
+  console.log("Updating Property", formData);
   try {
-    const response = await fetch(`http://localhost:8080/medicine/${id}`, {
+    const response = await fetch(`http://localhost:8080/property/${id}`, {
       method: "PATCH",
       body: formData,
     });
 
     if (!response.ok) {
-      throw new Error(`Medicine could not be Upadted: ${response.statusText}`);
+      throw new Error(`Property could not be Upadted: ${response.statusText}`);
     }
 
     const data = await response.json();
@@ -71,9 +70,9 @@ export async function updateMedicine(formData, id) {
 }
 
 export async function updateStar(formData, id) {
-  console.log("Updating Medicine", formData);
+  console.log("Updating Property", formData);
   try {
-    const response = await fetch(`http://localhost:8080/medicine/star/${id}`, {
+    const response = await fetch(`http://localhost:8080/property/star/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -82,7 +81,7 @@ export async function updateStar(formData, id) {
     });
 
     if (!response.ok) {
-      throw new Error(`Medicine could not be Upadted: ${response.statusText}`);
+      throw new Error(`Property could not be Upadted: ${response.statusText}`);
     }
 
     const data = await response.json();
@@ -92,7 +91,7 @@ export async function updateStar(formData, id) {
   }
 }
 
-export async function searchMedicine(searchData) {
+export async function searchProperty(searchData) {
   try {
     const response = await fetch("http://localhost:8080/search", {
       method: "POST",

@@ -1,11 +1,13 @@
-import AddCategory from "../Components/AddCategory";
-import TableCategory from "../Components/TableCategory";
+import React from "react";
+import AddCategory from "./AddCategory";
+import TableCategory from "./TableCategory";
 import styled from "styled-components";
 
 const CategoryContainer = styled.div`
-  display: flex;
-
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 2rem;
+  padding: 2rem;
 `;
 
 function AddingCategoryTab({ isCatAdd, setIsCatAdd }) {

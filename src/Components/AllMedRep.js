@@ -104,7 +104,8 @@ const ProfitDiv = styled.div`
   overflow: hidden;
 `;
 
-function AllMedRep({ products }) {
+function AllMedRep({ orders }) {
+  console.log(orders?.property);
   return (
     <Container>
       <StyledDiv>
@@ -116,7 +117,7 @@ function AllMedRep({ products }) {
         <TotalSellCostDiv>Total Selling Price</TotalSellCostDiv>
         <ProfitDiv>Profit/Loss</ProfitDiv>
       </StyledDiv>
-      {products?.map((el, index) => (
+      {orders?.map((el, index) => (
         <ProductEl el={el} key={el._id} index={index} />
       ))}
     </Container>
@@ -134,14 +135,6 @@ function ProductEl({ el, index }) {
         />
       </PicDiv>
       <NameDiv>{el?.name}</NameDiv>
-      <TotalItemBuyDiv>{el?.totalItemBuy}</TotalItemBuyDiv>
-      <TotalItemSoldDiv>{el?.totalItemSold}</TotalItemSoldDiv>
-      <TotalBuyCostDiv>
-        {(el?.buyingPrice * el?.totalItemSold).toFixed(2)} Taka
-      </TotalBuyCostDiv>
-      <TotalSellCostDiv>
-        {(el?.totalSellMoney).toFixed(2)} Taka
-      </TotalSellCostDiv>
       <ProfitDiv>
         <Calc el={el} />
       </ProfitDiv>

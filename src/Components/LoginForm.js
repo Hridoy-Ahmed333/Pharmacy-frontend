@@ -15,9 +15,9 @@ const FormContainer = styled.div`
 `;
 
 const FormTitle = styled.div`
-  font-size: 24px;
+  font-size: 45px;
   font-weight: bold;
-  color: #006400; // DarkGreen
+  color: blue; // DarkGreen
   margin-bottom: 20px;
 `;
 
@@ -28,25 +28,29 @@ const StyledForm = styled.form`
 `;
 
 const StyledLabel = styled.label`
-  font-size: 16px;
-  color: #006400; // DarkGreen
+  font-size: 25px;
+  font-weight: bold;
+  color: blue; // DarkGreen
   margin-bottom: 5px;
 `;
 
 const StyledInput = styled.input`
   padding: 10px;
+  height: 2.5rem;
   margin-bottom: 20px;
-  border: 1px solid #006400; // DarkGreen
+  border: 1px solid blue; // DarkGreen
   border-radius: 5px;
 `;
 
 const StyledButton = styled.button`
   padding: 10px 20px;
-  background-color: #008000; // Green
+  background-color: blue; // Green
   color: white;
-  height: 2.5rem;
+  font-size: 1.7rem;
+  font-weight: 950;
+  height: 4rem;
   margin: 0 auto;
-  width: 10rem;
+  width: 13rem;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -80,7 +84,7 @@ function LoginForm() {
     if (data.token) {
       localStorage.setItem("user", JSON.stringify(data));
       if (data?.role === "admin") {
-        navigate("/other");
+        navigate("/dashboard");
       } else {
         navigate("/");
       }

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { fetchUsers } from "../api/userApi";
-import UserInfo from "../Components/UserInfo";
 import UsersOrder from "../Components/UsersOrder";
 import styled from "styled-components";
 
@@ -31,7 +30,6 @@ function UserOrder() {
 
   return (
     <Container>
-      <UserInfo user={user} />
       <UsersOrder order={order} setOrder={setOrder} />
     </Container>
   );
