@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import AddingCategoryTab from "../Components/AddingCategoryTab";
-import AddProductForm from "../Components/AddProductForm";
+import AddProductForm from "../Components/AddPropertyForm";
+import Footer from "../Components/Footer/Footer";
 import { useState } from "react";
 
 const Container = styled.div`
@@ -31,19 +32,13 @@ const AddProductContainer = styled.div`
 
 function AddProduct() {
   const [isCatAdd, setIsCatAdd] = useState(false);
-  const [wantToAddCat, setWantToAddCadd] = useState(false);
+
   return (
     <div>
       <Container>
         <AddProductContainer>
           <AddProductForm isCatAdd={isCatAdd} />
         </AddProductContainer>
-        <Button onClick={() => setWantToAddCadd(!wantToAddCat)}>
-          {wantToAddCat ? "Close The Tab" : "Manage Category"}
-        </Button>
-        {wantToAddCat && (
-          <AddingCategoryTab isCatAdd={isCatAdd} setIsCatAdd={setIsCatAdd} />
-        )}
       </Container>
     </div>
   );

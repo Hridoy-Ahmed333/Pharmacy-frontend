@@ -2,7 +2,6 @@ import React, { useRef, useState } from "react";
 import styled from "styled-components";
 import { addUser } from "../api/userApi";
 
-// Define styled components
 const FormContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -16,9 +15,9 @@ const FormContainer = styled.div`
 `;
 
 const FormTitle = styled.div`
-  font-size: 24px;
+  font-size: 45px;
   font-weight: bold;
-  color: #006400; // DarkGreen
+  color: blue; // DarkGreen
   margin-bottom: 20px;
 `;
 
@@ -29,25 +28,29 @@ const StyledForm = styled.form`
 `;
 
 const StyledLabel = styled.label`
-  font-size: 16px;
-  color: #006400; // DarkGreen
+  font-size: 25px;
+  font-weight: bold;
+  color: blue; // DarkGreen
   margin-bottom: 5px;
 `;
 
 const StyledInput = styled.input`
   padding: 10px;
+  height: 1em;
   margin-bottom: 20px;
-  border: 1px solid #006400; // DarkGreen
+  border: 1px solid blue; // DarkGreen
   border-radius: 5px;
 `;
 
 const StyledButton = styled.button`
   padding: 10px 20px;
-  background-color: #008000; // Green
+  background-color: blue; // Green
   color: white;
-  height: 2.5rem;
+  font-size: 1.7rem;
+  font-weight: 950;
+  height: 4rem;
   margin: 0 auto;
-  width: 10rem;
+  width: 13rem;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -65,7 +68,6 @@ function SignUpFrom({ setSet }) {
     name: "",
     email: "",
     password: "",
-    mobileNumber: "",
   });
   const [image, setImage] = useState(null);
   const [errors, setErrors] = useState({});
@@ -90,9 +92,7 @@ function SignUpFrom({ setSet }) {
     if (!values.password) {
       tempErrors.password = "Password is required";
     }
-    if (!values.mobileNumber) {
-      tempErrors.mobileNumber = "Mobile number is required";
-    }
+
     if (!image) tempErrors.image = "Image is required";
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
@@ -106,16 +106,11 @@ function SignUpFrom({ setSet }) {
     Object.keys(values).forEach((key) => {
       formData.append(key, values[key]);
     });
-    if (
-      values.name &&
-      values.email &&
-      values.password &&
-      values.mobileNumber &&
-      image
-    ) {
+    if (values.name && values.email && values.password && image) {
       const res = await addUser(formData);
       console.log(res);
       alert("Registration Successfull");
+      setSet(set=>!set);
     } else {
       alert("Fill the form correctly");
     }
@@ -123,7 +118,6 @@ function SignUpFrom({ setSet }) {
       name: "",
       email: "",
       password: "",
-      mobileNumber: "",
     });
     if (fileInput.current) {
       fileInput.current.value = "";
@@ -162,17 +156,7 @@ function SignUpFrom({ setSet }) {
           onChange={handleChange}
         />
         {errors.password && <StyledError>{errors.password}</StyledError>}
-        <StyledLabel htmlFor="mobileNumber">Mobile Number</StyledLabel>
-        <StyledInput
-          id="mobileNumber"
-          name="mobileNumber"
-          type="text"
-          value={values.mobileNumber}
-          onChange={handleChange}
-        />
-        {errors.mobileNumber && (
-          <StyledError>{errors.mobileNumber}</StyledError>
-        )}
+
         <StyledLabel htmlFor="image">Image URL</StyledLabel>
         <StyledInput
           id="image"

@@ -1,18 +1,24 @@
 import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { SearchContext } from "../context/SearchContext";
-import { getMedicine, searchMedicine } from "../api/medicineApi";
+import {
+  getProperty,
+  searchByCategory,
+  searchProperty,
+} from "../api/propertyApi";
 import { useLocation, useNavigate } from "react-router-dom";
 import UserContext from "../context/UserContext";
 import { CartContext } from "../context/CartContext";
 import { FaCartPlus } from "react-icons/fa6";
 import Logout from "./Logout";
+import { getCategories } from "../api/categoryApi";
 const HeaderWrapper = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  height: 4rem;
   padding: 1.2rem 4.8rem;
-  background-color: rgb(173, 255, 47);
+  background-color: #2c2c2c;
   border-bottom: 1px solid rgb(0, 128, 0);
 
   @media (max-width: 1470px) {
@@ -25,7 +31,7 @@ const SiteName = styled.span`
   font-size: 2rem;
   font-weight: bold;
   cursor: pointer;
-  color: #6f42c1; // A vibrant purple color
+  color: #fff; // A vibrant purple color
   transition: color 0.3s ease, font-size 0.3s ease;
   font-style: italic;
 
@@ -34,6 +40,16 @@ const SiteName = styled.span`
     font-size: 2.2rem; // Increase font size on hover
   }
 `;
+
+const Name = styled.span`
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  color: #fff; // A vibrant purple color
+  transition: color 0.3s ease, font-size 0.3s ease;
+  font-style: italic;
+`;
+
 const SearchButton = styled.button`
   background-color: #007bff; // Button color
   color: white; // Text color
@@ -59,7 +75,7 @@ const SearchBox = styled.input.attrs({
   type: "search",
   placeholder: "Search...",
 })`
-  width: 400px;
+  width: 350px;
   height: 50px;
   margin-left: 5rem;
 
@@ -70,6 +86,8 @@ const SearchBox = styled.input.attrs({
 `;
 
 const NavLinks = styled.nav`
+  justify-content: center;
+  align-items: center;
   display: flex;
   gap: 2rem;
 
@@ -81,7 +99,7 @@ const NavLinks = styled.nav`
 
 const NavLink = styled.a`
   text-decoration: none;
-  color: inherit;
+  color: #fff;
   font-size: 1.25rem; // Increase the font size
   font-weight: 500;
   transition: color 0.3s ease; // Make the text bolder
@@ -94,12 +112,81 @@ const NavLink = styled.a`
   }
 `;
 
-// ... rest of the Header component ...
+const NavLink2 = styled.a`
+  text-decoration: none;
+  color: #fff;
+  background-color: #007bff;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  height: 2rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.25rem; // Increase the font size
+  font-weight: 500;
+  transition: color 0.3s ease; // Make the text bolder
+  &:hover {
+    background-color: #0056b3;
+  }
 
-// Update the Header component to include the new elements
+  @media (max-width: 1470px) {
+    font-size: 1rem;
+  }
+`;
+
+const UserImage = styled.img`
+  object-fit: cover;
+  width: 85%;
+  height: 85%;
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 100%;
+`;
+
+const StyledSelect = styled.select`
+  font-size: 1rem;
+  padding: 0.5rem;
+  width: 12rem;
+  height: 3rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  appearance: none; /* Removes default browser styling */
+  -webkit-appearance: none; /* For Safari */
+  -moz-appearance: none; /* For Firefox */
+  &:focus {
+    outline: none;
+    border-color: #4caf50; /* Example focus style */
+  }
+`;
+const StyledLabel = styled.label`
+  text-decoration: none;
+  color: #fff;
+  font-size: 1.25rem; // Increase the font size
+  font-weight: 500;
+  transition: color 0.3s ease; // Make the text bolder
+  &:hover {
+    color: rgb(0, 100, 0);
+  }
+
+  @media (max-width: 1470px) {
+    font-size: 1rem;
+  }
+`;
+
+const PicDiv = styled.div`
+  height: 4rem;
+  width: 4rem;
+  border-radius: 100%;
+`;
+
 function Header() {
   const { cartAmount } = useContext(CartContext);
   const [search, setSearch] = useState("");
+  const [selectedCat, setSelectedCat] = useState("");
+  const [category, SetCategory] = useState([]);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
   const {
@@ -109,78 +196,109 @@ function Header() {
     inStockFilter,
     applySearch,
     applySearchResults,
+    applyCategoryFilter,
   } = useContext(SearchContext);
   const { user } = useContext(UserContext);
-  const showSearchBox = location.pathname === "/";
+  const showSearchCategory = location.pathname === "/property";
+  useEffect(() => {}, [
+    searchResults,
+    searchText,
+    categoryFilter,
+    inStockFilter,
+  ]);
+
   useEffect(() => {
-    // This effect runs whenever searchResults changes
-    // console.log("Updated search results:", searchResults);
-    // console.log("The search text is:", searchText);
-    // console.log("The Category is:", categoryFilter);
-    // console.log("The Stock is:", inStockFilter);
-  }, [searchResults, searchText, categoryFilter, inStockFilter]);
+    const fetchCategories = async () => {
+      try {
+        const data = await getCategories();
+        console.log(data);
+        SetCategory(data);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+
+    fetchCategories();
+  }, []); // Empty dependency array means this effect runs once on mount
+
   async function handleClick(e) {
     e.preventDefault();
-    const res = await searchMedicine({
+    const res = await searchProperty({
       searchText: search ? search : "",
     });
     applySearchResults(res);
     applySearch(search);
-
-    // console.log("In the Header the response is:", res);
   }
 
   const handleHeaderClick = async (e) => {
     e.preventDefault();
-    const response = await getMedicine();
+    const response = await getProperty();
     applySearchResults(response);
     setSearch("");
     navigate(`/`);
   };
 
+  async function handleCatChange(e) {
+    const selectedCategoryName = e.target.value;
+    if (selectedCategoryName === "Add Category") {
+      navigate("category");
+    } else {
+      setSelectedCat(selectedCategoryName);
+
+      const res = await searchByCategory({
+        categoryFilter: selectedCategoryName,
+      });
+
+      console.log(res);
+      applySearchResults(res);
+      applyCategoryFilter(selectedCategoryName);
+    }
+  }
+
   const isAdmin = user?.role === "admin";
-  const isSupplier = user?.role === "supplier";
   const isUser = user?.role === "user";
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <HeaderWrapper>
       <div>
-        <SiteName onClick={handleHeaderClick}>Hridoy Pharma</SiteName>
-
-        {showSearchBox && (
-          <>
-            <SearchBox
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-            <SearchButton onClick={handleClick}>Search</SearchButton>
-          </>
-        )}
+        <SiteName onClick={handleHeaderClick}>Homyz</SiteName>
       </div>
       <NavLinks>
-        {isAdmin && <NavLink href="/other">Dashboard</NavLink>}
-        {isSupplier && <NavLink href="request">Request</NavLink>}
-        {isAdmin && <NavLink href="addProduct">Add Product</NavLink>}
-        {isAdmin && <NavLink href="adminOrders">Orders</NavLink>}
-        <NavLink href="/">Products</NavLink>
-        {!isAdmin && (
-          <>
-            {cartAmount ? (
-              <NavLink href="/cart">
-                <FaCartPlus size={32} color="red" />
-                {cartAmount ? "!" : ""}
-              </NavLink>
-            ) : (
-              <NavLink href="/cart">
-                <FaCartPlus size={32} />
-              </NavLink>
-            )}
-          </>
+        <NavLink href="/">Home</NavLink>
+        {isAdmin && <NavLink href="/dashboard">Dashboard</NavLink>}
+        <NavLink href="/property">Properties</NavLink>
+        {isAdmin && <NavLink href="addProduct">Add Property</NavLink>}
+        {showSearchCategory && (
+          <StyledSelect value={selectedCat} onChange={handleCatChange}>
+            <option value="">
+              {selectedCat ? "Show All Product" : "Search with Category"}
+            </option>
+            {category?.map((cat) => (
+              <option key={cat._id} value={cat.category}>
+                {cat.category}
+              </option>
+            ))}
+            {isAdmin && <option>Add Category</option>}
+          </StyledSelect>
+        )}
+        {isUser && <NavLink href="/userOrder">User History</NavLink>}
+        <NavLink href="/contact">Contact Us</NavLink>
+        {user?.role !== "visitor" && <Name>{user?.name}</Name>}
+        {user?.role !== "visitor" && (
+          <PicDiv>
+            <UserImage
+              src={`http://localhost:8080/images/${user?.image}`}
+              alt={user?.name}
+            />
+          </PicDiv>
         )}
 
-        {isUser && <NavLink href="/userOrder">User Order</NavLink>}
         {user?.role === "visitor" ? (
-          <NavLink href="/login">Sign in</NavLink>
+          <NavLink2 href="/login">Sign in</NavLink2>
         ) : (
           <Logout />
         )}

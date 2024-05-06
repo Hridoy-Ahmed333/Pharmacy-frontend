@@ -1,15 +1,13 @@
 import { Outlet } from "react-router-dom";
 import Header from "./Header";
 import styled from "styled-components";
-import Footer from "./Footer";
+
 import { SearchProvider } from "../context/SearchContext";
 import UserContext from "../context/UserContext";
 import { useContext, useEffect, useState } from "react";
 import { CartContext } from "../context/CartContext";
-import Modal from "./Modal";
-import EditComp from "./EditComp";
-import { ModalProvider } from "../context/ModalContext";
 import { ProductProvider } from "../context/ProductContext";
+import Footer from "./Footer/Footer";
 
 const StyledAppLayout = styled.div`
   display: flex;
@@ -18,9 +16,9 @@ const StyledAppLayout = styled.div`
 `;
 
 const Main = styled.main`
-  background-color: rgb(245, 255, 250);
+  background-color: white;
   flex-grow: 1;
-  padding: 1rem 4.8rem 3.4rem;
+
   overflow: scroll;
 `;
 
@@ -29,8 +27,6 @@ const Container = styled.div`
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-
-  gap: 3.2rem;
 `;
 
 function AppLayout() {
@@ -63,24 +59,19 @@ function AppLayout() {
   return (
     <div>
       <ProductProvider>
-        <ModalProvider>
-          <StyledAppLayout>
-            <UserContext.Provider value={{ user, resetUserContext }}>
-              <SearchProvider>
-                <Header />
-                <Main>
-                  <Container>
-                    <Outlet />
-                  </Container>
-                </Main>
-                <Footer />
-              </SearchProvider>
-            </UserContext.Provider>
-          </StyledAppLayout>
-          <Modal>
-            <EditComp />
-          </Modal>
-        </ModalProvider>
+        <StyledAppLayout>
+          <UserContext.Provider value={{ user, resetUserContext }}>
+            <SearchProvider>
+              <Header />
+              <Main>
+                <Container>
+                  <Outlet />
+                  <Footer />
+                </Container>
+              </Main>
+            </SearchProvider>
+          </UserContext.Provider>
+        </StyledAppLayout>
       </ProductProvider>
     </div>
   );

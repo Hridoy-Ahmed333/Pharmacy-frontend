@@ -4,22 +4,28 @@ import { CartContext } from "../context/CartContext";
 import UserContext from "../context/UserContext";
 import styled from "styled-components";
 
-const NavLink = styled.a`
+const NavLink2 = styled.a`
   text-decoration: none;
-  color: inherit;
+  color: #fff;
+  background-color: #007bff;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  height: 2rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-radius: 8px;
+  cursor: pointer;
   font-size: 1.25rem; // Increase the font size
   font-weight: 500;
-  cursor: pointer;
   transition: color 0.3s ease; // Make the text bolder
   &:hover {
-    color: rgb(0, 100, 0);
+    background-color: #0056b3;
   }
 
   @media (max-width: 1470px) {
     font-size: 1rem;
   }
 `;
-
 function Logout() {
   const { cart, setCart, cartAmount, setCartAmount } = useContext(CartContext);
   const { resetUserContext } = useContext(UserContext);
@@ -35,7 +41,7 @@ function Logout() {
     localStorage.removeItem("order");
     navigate("/login");
   }
-  return <NavLink onClick={handleClick}>Logout</NavLink>;
+  return <NavLink2 onClick={handleClick}>Logout</NavLink2>;
 }
 
 export default Logout;

@@ -1,8 +1,8 @@
 import { useContext } from "react";
 import SingleProductContext from "../context/SingleProductContext";
 import styled from "styled-components";
-import ProductCol1 from "./ProductCol1";
-import ProductCol2 from "./ProductCol2";
+import ProductCol1 from "./Col";
+
 const ProductContainer = styled.div`
   display: flex;
   flex-direction: row;
@@ -10,12 +10,7 @@ const ProductContainer = styled.div`
 `;
 
 const Col1 = styled.div`
-  width: 60%;
-  background-color: #f0f0f0;
-`;
-const Col2 = styled.div`
-  width: 40%;
-  background-color: #f0f0f0;
+  background-color: white;
 `;
 
 function ProductDetailsWhole() {
@@ -25,9 +20,6 @@ function ProductDetailsWhole() {
       <Col1>
         <ProductCol1 />
       </Col1>
-      <Col2>
-        <ProductCol2 />
-      </Col2>
     </ProductContainer>
   );
 }

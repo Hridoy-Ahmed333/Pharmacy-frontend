@@ -178,6 +178,11 @@ function CartForm({ amount, setAmount, product, totalPrice, setTotalPrice }) {
               e.target.value > product?.stock ? product?.stock : e.target.value
             )
           );
+          if (Number(e.target.value) > Number(product?.stock)) {
+            alert(
+              `Only ${product?.stock} pieces of this product are availble in stock`
+            );
+          }
         }}
       ></CartInput>
       <CartButton onClick={() => clickHandler("+")}>+</CartButton>

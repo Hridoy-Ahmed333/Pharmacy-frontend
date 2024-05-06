@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getOneUser } from "../api/userApi";
 
-function FetchCustomerNameForAdminOrder({ userId }) {
+function FetchCustomerNameForAdminOrder(userId) {
   const [user, setUser] = useState(null);
   useEffect(() => {
     const fetchData = async () => {
@@ -15,7 +15,7 @@ function FetchCustomerNameForAdminOrder({ userId }) {
 
     fetchData();
   }, []);
-  return <div>{user?.name}</div>;
+  return user?.name;
 }
 
 export default FetchCustomerNameForAdminOrder;

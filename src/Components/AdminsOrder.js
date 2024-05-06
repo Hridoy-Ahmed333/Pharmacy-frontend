@@ -11,132 +11,44 @@ const Container = styled.div`
   margin-top: 3rem;
 `;
 
+const ProductImage = styled.img`
+  object-fit: cover;
+  width: 85%;
+  height: 85%;
+  max-width: 100%;
+  max-height: 100%;
+`;
+
 const StyledDiv = styled.div`
   display: flex;
-  min-height: 5rem;
+  height: 8rem;
   width: 70%;
   justify-content: space-between;
   width: 100%;
-  background-color: ${({ "data-index": index }) =>
-    index % 2 === 0 ? "#F5F5F5" : "#FFFFFF"};
-  &:hover {
-    background-color: ${({ "data-index": index }) =>
-      index % 2 === 0 ? "#E5E5E5" : "#f0f0f0;"};
-  }
+  border-bottom: 2px solid black;
+  border-top: 2px solid black;
 `;
 
 const NameDiv = styled.div`
-  flex: 0.8;
   display: flex;
+  font-weight: 700;
+  justify-content: start;
+  align-items: center;
+  margin: 0 auto;
+  overflow: hidden;
+`;
+const PicDiv = styled.div`
+  display: flex;
+  width: 20rem;
   font-weight: 700;
   justify-content: center;
   align-items: center;
   overflow: hidden;
-`;
-
-const DateDiv = styled.div`
-  flex: 0.7;
-  display: flex;
-  font-weight: 700;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-`;
-
-const AddressDiv = styled.div`
-  flex: 1;
-  display: flex;
-  font-weight: 700;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-`;
-const StatusDiv = styled.div`
-  flex: 0.5;
-  display: flex;
-  font-weight: 700;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-`;
-
-const StatusDilDiv = styled.div`
-  flex: 0.5;
-  display: flex;
-  color: green;
-  font-size: 1rem;
-  font-weight: 700;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-`;
-const StatusPenDiv = styled.div`
-  flex: 0.8;
-  display: flex;
-  color: red;
-  font-size: 1rem;
-  font-weight: 700;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-`;
-
-const Button = styled.button`
-  height: 2.5rem;
-  width: 8rem;
-  font-size: 1rem;
-  font-weight: 700;
-  background-color: #ff8c00;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, height 0.3s ease, width 0.3s ease,
-    font-size 0.3s ease, font-width 0.3s ease;
-
-  &:hover {
-    background-color: #ff6347;
-    height: 3rem;
-    width: 11rem;
-    font-size: 1rem;
-    font-weight: 800;
-  }
-`;
-
-const Span = styled.div`
-  display: flex;
-  height: 3rem;
-  align-items: center;
-  justify-content: center;
-  width: 11rem;
-  font-size: 1rem;
-  font-weight: 700;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  transition: background-color 0.3s ease, height 0.3s ease, width 0.3s ease,
-    font-size 0.3s ease, font-width 0.3s ease;
-
-  &:hover {
-    background-color: #45a049;
-    height: 3.3rem;
-    width: 13rem;
-    font-size: 1rem;
-    font-weight: 800;
-  }
 `;
 
 function AdminsOrder({ order }) {
   return (
     <Container>
-      <StyledDiv>
-        <NameDiv>Customer Name</NameDiv>
-        <NameDiv>Medicine Name</NameDiv>
-        <AddressDiv>Address</AddressDiv>
-        <DateDiv>Date</DateDiv>
-        <StatusDiv>Status</StatusDiv>
-      </StyledDiv>
       {order
         ?.slice()
         .reverse()
@@ -151,6 +63,10 @@ function AdminsOrder({ order }) {
 
 function Item({ el }) {
   const [stat, setStat] = useState(el?.status);
+  const property = Name(el?.property);
+  const buyer = FetchCustomerNameForAdminOrder(el?.userId);
+  const address = el?.address;
+  const date = Date(el?.date);
   async function handleClick(id) {
     await updateOneOrder(id);
 
@@ -158,47 +74,27 @@ function Item({ el }) {
   }
   return (
     <>
-      <NameDiv>
-        <FetchCustomerNameForAdminOrder userId={el?.userId} />
-      </NameDiv>
-      <NameDiv>
-        <Name medicines={el?.medicines} />
-      </NameDiv>
-      <AddressDiv>{el?.address}</AddressDiv>
-      <DateDiv>
-        {el?.date && (
-          <DateDiv>
-            <Date dateString={el?.date} />
-          </DateDiv>
-        )}
-      </DateDiv>
-      <StatusDiv>
-        {stat ? (
-          <StatusDilDiv>
-            <Span>Delivered</Span>
-          </StatusDilDiv>
-        ) : (
-          <StatusPenDiv>
-            <Button onClick={() => handleClick(el?._id)}>Deliver</Button>
-          </StatusPenDiv>
-        )}
-      </StatusDiv>
+      <PicDiv>
+        <ProductImage
+          src={`http://localhost:8080/images/${el?.image}`}
+          alt={el?.name}
+        />
+      </PicDiv>
+      <NameDiv>{`${property} in ${address} was brought by ${buyer} at ${date}`}</NameDiv>
     </>
   );
 }
 
-function Name({ medicines }) {
-  const medArr = medicines?.map((el) => {
-    return `${el?.name} (${el?.inTotal} ${
-      el?.inTotal > 1 ? "Pieces" : "Piece"
-    })`;
+function Name(property) {
+  console.log(property);
+  const prop = property?.map((el) => {
+    return `${el?.name}`;
   });
 
-  const name = medArr.join(", ");
-  return <div>{name}</div>;
+  return prop;
 }
 
-function Date({ dateString }) {
+function Date(dateString) {
   const [ampm, setAmpm] = useState("am");
   const [hours, setHour] = useState("");
   const [date, setDate] = useState("");
@@ -228,15 +124,10 @@ function Date({ dateString }) {
       setHour(String(hour));
     }
   }, [dateString]);
-  const orderDate = `Date: ${date} `;
-  const orderTime = `Time: ${hours}:${min} ${ampm}`;
+  const orderDate = ` ${date} `;
+  const orderTime = ` ${hours}:${min} ${ampm}`;
 
-  return (
-    <div>
-      <div>{orderDate}</div>
-      <div>{orderTime}</div>
-    </div>
-  );
+  return `${orderDate} at ${orderTime}`;
 }
 
 export default AdminsOrder;

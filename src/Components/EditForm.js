@@ -1,21 +1,32 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { getCategories } from "../api/categoryApi";
-import { updateMedicine } from "../api/medicineApi";
+import { updateProperty } from "../api/propertyApi";
 import SingleProductContext from "../context/SingleProductContext";
-import { ModalContext } from "../context/ModalContext";
+import { useNavigate } from "react-router-dom";
 
-// Define styled components for form elements
+const Wrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+`;
+
 const StyledForm = styled.form`
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  background-color: #f0f0f0; // Light background color
+  padding: 2rem;
+  width: 70%;
+  border-radius: 8px;
 `;
 
 const StyledSelect = styled.select`
   padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 4px;
+  width: 100%;
 `;
 
 const StyledLabel = styled.label`
@@ -27,6 +38,7 @@ const StyledInput = styled.input`
   padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 4px;
+  width: 100%;
 `;
 
 const StyledArea = styled.textarea`
@@ -34,6 +46,7 @@ const StyledArea = styled.textarea`
   border: 1px solid #ccc;
   border-radius: 4px;
   min-height: 20rem;
+  width: 100%;
 `;
 
 const StyledButton = styled.button`
@@ -41,7 +54,7 @@ const StyledButton = styled.button`
   height: 2.5rem;
   width: 8rem;
   margin: 0 auto;
-  background-color: blue;
+  background-color: #4caf50; // Elegant green color
   color: white;
   border: none;
   border-radius: 4px;
@@ -53,21 +66,32 @@ const StyledError = styled.span`
   font-size: 0.8rem;
 `;
 
+// Adjusted InputRow and InputField for equal size and gap
+const InputRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem; // Increased gap to 2rem
+  flex-wrap: wrap; // Allow wrapping to accommodate different screen sizes
+`;
+
+const InputField = styled.div`
+  flex: 1 1 calc(50% - 1rem); // Adjusted to ensure each input field takes up half the row minus the gap
+`;
+
 const EditForm = ({ product, reren, setReren }) => {
+  const navigate = useNavigate();
   const [values, setValues] = useState({
     name: product.name || "",
     description: product.description || "",
     price: product.price || 0,
     discountPercentage: product.discountPercentage || 0,
-    brand: product.brand || "",
+    address: product.address || "",
     category: product.category || "",
-    buyingPrice: product.buyingPrice || 0,
   });
   const [image, setImage] = useState(null);
   const fileInputRef = useRef(null);
 
   const [categories, setCategories] = useState([]);
-  const { show, setShow } = useContext(ModalContext);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -100,10 +124,8 @@ const EditForm = ({ product, reren, setReren }) => {
     if (values.discountPercentage < 0 || values.discountPercentage > 100) {
       tempErrors.discountPercentage = "Discount must be between  0 and  100";
     }
-    if (!values.brand) tempErrors.brand = "Brand is required";
+    if (!values.address) tempErrors.address = "Address is required";
     if (!values.category) tempErrors.category = "Category is required";
-    if (!values.buyingPrice)
-      tempErrors.buyingPrice = " Buying Price is Required";
 
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
@@ -128,118 +150,125 @@ const EditForm = ({ product, reren, setReren }) => {
       values.name &&
       values.description &&
       values.price &&
-      values.brand &&
-      values.category &&
-      values.buyingPrice
+      values.address &&
+      values.category
     ) {
-      await updateMedicine(formData, product._id);
+      await updateProperty(formData, product._id);
     } else {
-      alert("Medicine cannot be added");
+      alert("Property cannot be added");
     }
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
     setImage(null);
     setReren((reren) => !reren);
-    setShow(!show);
+    navigate("/");
   };
 
   return (
-    <StyledForm onSubmit={handleSubmit}>
-      <StyledLabel htmlFor="name">Name</StyledLabel>
-      <StyledInput
-        id="name"
-        name="name"
-        type="text"
-        value={values.name}
-        onChange={handleChange}
-      />
-      {errors.name && <StyledError>{errors.name}</StyledError>}
+    <Wrapper>
+      <StyledForm onSubmit={handleSubmit}>
+        <InputRow>
+          <InputField>
+            <StyledLabel htmlFor="name">Name</StyledLabel>
+            <StyledInput
+              id="name"
+              name="name"
+              type="text"
+              value={values.name}
+              onChange={handleChange}
+            />
+            {errors.name && <StyledError>{errors.name}</StyledError>}
+          </InputField>
+          <InputField>
+            <StyledLabel htmlFor="category">Category</StyledLabel>
+            <StyledSelect
+              id="category"
+              name="category"
+              value={values.category || ""}
+              onChange={handleChange}
+            >
+              <option value=""> --- Select a Category --- </option>
+              {categories.map((category) => (
+                <option key={category._id} value={category.category}>
+                  {category.category}
+                </option>
+              ))}
+            </StyledSelect>
+            {errors.category && <StyledError>{errors.category}</StyledError>}
+          </InputField>
+        </InputRow>
 
-      <StyledLabel htmlFor="description">Description</StyledLabel>
-      <StyledArea
-        id="description"
-        name="description"
-        type="text"
-        value={values.description}
-        onChange={handleChange}
-      />
-      <StyledLabel htmlFor="category">Category</StyledLabel>
-      <StyledSelect
-        id="category"
-        name="category"
-        value={values.category || ""}
-        onChange={handleChange}
-      >
-        <option value=""> --- Select a Category --- </option>
-        {categories.map((category) => (
-          <option key={category._id} value={category.category}>
-            {category.category}
-          </option>
-        ))}
-      </StyledSelect>
-      {errors.category && <StyledError>{errors.category}</StyledError>}
+        <StyledLabel htmlFor="description">Description</StyledLabel>
+        <StyledArea
+          id="description"
+          name="description"
+          type="text"
+          value={values.description}
+          onChange={handleChange}
+        />
+        <InputRow>
+          <InputField>
+            <StyledLabel htmlFor="price">Price</StyledLabel>
+            <StyledInput
+              id="price"
+              name="price"
+              type="number"
+              min="0"
+              value={values.price}
+              onChange={handleChange}
+            />
+            {errors.price && <StyledError>{errors.price}</StyledError>}
+          </InputField>
+          <InputField>
+            <StyledLabel htmlFor="discountPercentage">
+              Discount Percentage
+            </StyledLabel>
+            <StyledInput
+              id="discountPercentage"
+              name="discountPercentage"
+              type="number"
+              min="0"
+              max="100"
+              value={values.discountPercentage}
+              onChange={handleChange}
+            />
+            {errors.discountPercentage && (
+              <StyledError>{errors.discountPercentage}</StyledError>
+            )}
+          </InputField>
+        </InputRow>
 
-      <StyledLabel htmlFor="price">Price</StyledLabel>
-      <StyledInput
-        id="price"
-        name="price"
-        type="number"
-        min="0"
-        value={values.price}
-        onChange={handleChange}
-      />
-      {errors.price && <StyledError>{errors.price}</StyledError>}
+        <InputRow>
+          <InputField>
+            {" "}
+            <StyledLabel htmlFor="address">Address</StyledLabel>
+            <StyledInput
+              id="address"
+              name="address"
+              type="text"
+              value={values.address}
+              onChange={handleChange}
+            />
+            {errors.address && <StyledError>{errors.address}</StyledError>}
+          </InputField>
+          <InputField>
+            {" "}
+            <StyledLabel htmlFor="image">Image URL</StyledLabel>
+            <StyledInput
+              id="image"
+              name="image"
+              type="file"
+              ref={fileInputRef}
+              value={values.image}
+              onChange={handleImageChange}
+            />
+          </InputField>
+        </InputRow>
 
-      <StyledLabel htmlFor="buyingPrice">Set Buying Price</StyledLabel>
-      <StyledInput
-        id="buyingPrice"
-        name="buyingPrice"
-        type="number"
-        min="0"
-        value={values.buyingPrice}
-        onChange={handleChange}
-      />
-      {errors.buyingPrice && <StyledError>{errors.buyingPrice}</StyledError>}
-
-      <StyledLabel htmlFor="discountPercentage">
-        Discount Percentage
-      </StyledLabel>
-      <StyledInput
-        id="discountPercentage"
-        name="discountPercentage"
-        type="number"
-        min="0"
-        max="100"
-        value={values.discountPercentage}
-        onChange={handleChange}
-      />
-      {errors.discountPercentage && (
-        <StyledError>{errors.discountPercentage}</StyledError>
-      )}
-
-      <StyledLabel htmlFor="brand">Brand</StyledLabel>
-      <StyledInput
-        id="brand"
-        name="brand"
-        type="text"
-        value={values.brand}
-        onChange={handleChange}
-      />
-      {errors.brand && <StyledError>{errors.brand}</StyledError>}
-
-      <StyledLabel htmlFor="image">Image URL</StyledLabel>
-      <StyledInput
-        id="image"
-        name="image"
-        type="file"
-        ref={fileInputRef}
-        value={values.image}
-        onChange={handleImageChange}
-      />
-
-      <StyledButton type="submit">Submit</StyledButton>
-    </StyledForm>
+        <StyledButton type="submit">Submit</StyledButton>
+      </StyledForm>
+    </Wrapper>
   );
 };
 

@@ -11,16 +11,12 @@ const Container = styled.div`
 
 const StyledDiv = styled.div`
   display: flex;
-  min-height: 5rem;
+  height: 8rem;
   width: 70%;
   justify-content: space-between;
   width: 100%;
-  background-color: ${({ "data-index": index }) =>
-    index % 2 === 0 ? "#F5F5F5" : "#FFFFFF"};
-  &:hover {
-    background-color: ${({ "data-index": index }) =>
-      index % 2 === 0 ? "#E5E5E5" : "#f0f0f0;"};
-  }
+  border-bottom: 2px solid black;
+  border-top: 2px solid black;
 `;
 
 const NameDiv = styled.div`
@@ -32,104 +28,58 @@ const NameDiv = styled.div`
   overflow: hidden;
 `;
 
-const DateDiv = styled.div`
-  flex: 0.7;
+const PicDiv = styled.div`
   display: flex;
+  width: 20rem;
   font-weight: 700;
   justify-content: center;
   align-items: center;
   overflow: hidden;
 `;
 
-const AddressDiv = styled.div`
-  flex: 1;
-  display: flex;
-  font-weight: 700;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-`;
-const StatusDiv = styled.div`
-  flex: 0.5;
-  display: flex;
-  font-weight: 700;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-`;
-
-const StatusDilDiv = styled.div`
-  flex: 0.5;
-  display: flex;
-  color: green;
-  font-size: 1rem;
-  font-weight: 700;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-`;
-const StatusPenDiv = styled.div`
-  flex: 0.5;
-  display: flex;
-  color: red;
-  font-size: 1rem;
-  font-weight: 700;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
+const ProductImage = styled.img`
+  object-fit: cover;
+  width: 85%;
+  height: 85%;
+  max-width: 100%;
+  max-height: 100%;
 `;
 
 function UsersOrder({ order }) {
   return (
     <Container>
-      <StyledDiv>
-        <NameDiv>Name</NameDiv>
-        <AddressDiv>Address</AddressDiv>
-        <DateDiv>Date</DateDiv>
-        <StatusDiv>Status</StatusDiv>
-      </StyledDiv>
       {order
         ?.slice()
         .reverse()
         .map((el, index) => (
           <StyledDiv key={el?._id} data-index={index}>
+            <PicDiv>
+              <ProductImage
+                src={`http://localhost:8080/images/${el?.image}`}
+                alt="property picture"
+              />
+            </PicDiv>
             <NameDiv>
-              <Name medicines={el?.medicines} />
+              You Brought &nbsp; {Name(el?.property)}&nbsp;in {el?.address}
+              &nbsp; at {Date(el?.date)}
             </NameDiv>
-            <AddressDiv>{el?.address}</AddressDiv>
-            <DateDiv>
-              {el?.date && (
-                <DateDiv>
-                  <Date dateString={el?.date} />
-                </DateDiv>
-              )}
-            </DateDiv>
-            <StatusDiv>
-              {el?.status ? (
-                <StatusDilDiv>Dilevered</StatusDilDiv>
-              ) : (
-                <StatusPenDiv>Order Pending</StatusPenDiv>
-              )}
-            </StatusDiv>
           </StyledDiv>
         ))}
     </Container>
   );
 }
 
-function Name({ medicines }) {
-  console.log(medicines);
-  const medArr = medicines?.map((el) => {
-    return `${el?.name} (${el?.inTotal} ${
-      el?.inTotal > 1 ? "Pieces" : "Piece"
-    })`;
+function Name(property) {
+  console.log(property);
+  const medArr = property?.map((el) => {
+    return `${el?.name}`;
   });
 
   const name = medArr.join(", ");
   return <div>{name}</div>;
 }
 
-function Date({ dateString }) {
+function Date(dateString) {
   const [ampm, setAmpm] = useState("am");
   const [hours, setHour] = useState("");
   const [date, setDate] = useState("");
@@ -159,15 +109,10 @@ function Date({ dateString }) {
       setHour(String(hour));
     }
   }, [dateString]);
-  const orderDate = `Date: ${date} `;
-  const orderTime = `Time: ${hours}:${min} ${ampm}`;
+  const orderDate = `${date} `;
+  const orderTime = `${hours}:${min} ${ampm}`;
 
-  return (
-    <div>
-      <div>{orderDate}</div>
-      <div>{orderTime}</div>
-    </div>
-  );
+  return `${orderDate}, ${orderTime}`;
 }
 
 export default UsersOrder;
